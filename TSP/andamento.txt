@@ -1,0 +1,5 @@
+registro do que foi feito e quem fez até agora
+
+- lucas
+organizei a estrutura do src pra comportar os .h. Passível a mudança
+criei uma função que lê o txt e monta a matriz de adjacência do grafo lendo APENAS 1x a entrada.
