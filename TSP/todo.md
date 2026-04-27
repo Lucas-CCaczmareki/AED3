@@ -8,7 +8,7 @@
 - [ ] Decidir heurística para a solução aproximada
 - [ ] Fazer função de leitura e montagem do grafo. 
 
-# Solução Ótima
+# Solução Exata
 - [ ] 
 
 # Solução Aproximada
