@@ -4,4 +4,6 @@
 - **EULERIAN TOUR:**
 -- **HIERHOLZER:**
 -- **FLEUZER:** 
-- **MSP (MINIMUM SPANNING TREE):**https://youtu.be/jsmMtJpPnhU?si=PrzzRKMLa4NMSNqw 
+- **MSP (MINIMUM SPANNING TREE):**
+-- **LAZY PRIM:**https://youtu.be/jsmMtJpPnhU?si=PrzzRKMLa4NMSNqw 
+-- **EAGER PRIM:**https://youtu.be/xq3ABa-px_g?si=uE3c1Mxee_UysYX1
