@@ -5,11 +5,31 @@
 - [ ] Passo a passo para execução do código
 - [ ] Apresentação(slides? vídeo?) descrevendo e explicando a solução e resultados  
 
-- [ ] Decidir heurística para a solução aproximada
-- [ ] Fazer função de leitura e montagem do grafo. 
+- [x] Decidir heurística para a solução aproximada
+- [x] Fazer função de leitura e montagem do grafo. 
 
-# Solução Exata
-- [ ] 
+# Solução Exata (Brute force)
+- [ ] Gerar todas as permutações de vérticas a partir de uma origem fixada
+- [ ] Loopa no array das permutações pra calcular o custo de todos os caminhos
+-- [ ] Estabelece regra arbitrária ao conferir a permutação para evitar simetria reversa:
 
-# Solução Aproximada
-- [ ] Algoritmo de MST Prim
+ex: A B D C A = A C D B A, pra isso, compara o nome do segundo vértice com o último. B > C aceita, mas C > B rejeita
+
+- [ ] Mantém registro do menor caminho conhecido e dps de ver todos retorna
+
+# Solução Aproximada (MST-DFS)
+- [ ] (SE NECESSÁRIO) Desenvolver funções que confiram se o grafo respeita as propriedades
+-- [ ] Desigualdade triângular.
+-- [ ] Preparar o grafo pra aplicar o Prim (todas vértices tem ida e volta) 
+
+- [ ] Algoritmo de MST (Lazy-Prim)
+-- [ ] Estruturas (PQ, Array visited)
+-- [ ] 
+-- [ ]
+
+- [ ] Algoritmo DFS
+-- [ ] 
+-- [ ] 
+-- [ ] 
+
+- [ ] Junta no 'mst_dfs_approx.cpp' e corta os vértices repetidos

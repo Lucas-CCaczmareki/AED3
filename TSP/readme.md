@@ -14,10 +14,10 @@
 
 **- Christofides:** cria uma MST, pega os vértices de grau ímpar, torna dois desses vértices vizinhos(visando o menor custo), como consequência obtem um ciclo eureliano e repete a mesma fórmula do RSL porém tendo menos repetição de vértices e com um custo maior. O(n³)
 
+**- MST-DFS:** cria uma MST, aplica o DFS pra criar um caminho, analisa o caminho e corta os vértices repetidos se o grafo respeitar a desigualdade triângular.
+
 ### Solução exata escolhida
-Por enquanto:
 -  Brute force
 
 ### Solução aproximativa escolhida
-Por enquanto:
-- 
+- MST-DFS
