@@ -12,4 +12,4 @@
 - [ ] 
 
 # Solução Aproximada
-- [ ]
+- [ ] Algoritmo de MST Prim
