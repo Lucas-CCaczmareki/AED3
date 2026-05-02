@@ -1,8 +1,8 @@
 #include "prim_mst.h"
 using namespace std;
 
-vector<vector<int>> prim_mst( int nodes, vector<vector<int>> graph ) {    // returns an adjacency list || nodes = number of nodes in the graph
-    vector<vector<int>> adjList(nodes);            // adjacency list
+vector<vector<int>> prim_mst( int nodes, vector<vector<int>>& graph ) {    // returns an adjacency list || nodes = number of nodes in the graph
+    vector<vector<int>> adjList(nodes);     // adjacency list
     vector<bool> visited(nodes, false);     // visited nodes
 
     // setting the priority queue to organize the paths, from least expensive to the most expensive
@@ -19,8 +19,8 @@ vector<vector<int>> prim_mst( int nodes, vector<vector<int>> graph ) {    // ret
         }
     }
 
-    int edges = 0;                          // inicia o numero de arestas da MST em 0
-    while( edges < (nodes - 1) && !queue.empty() ) { // enquanto a fila n estiver vazia e o nº de arestas for menor q o nº de vertices, executa
+    int edges = 0;                                      // inicia o numero de arestas da MST em 0
+    while( edges < (nodes - 1) && !queue.empty() ) {    // enquanto a fila n estiver vazia e o nº de arestas for menor q o nº de vertices, executa
         // tira o primeiro da fila
         auto tupla = queue.top(); 
         int dest = get<2>(tupla);
