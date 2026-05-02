@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <vector>
-
+using namespace std;
 // receives the stream by reference
-std::vector<std::vector<int>> buildGraph(std::fstream& tsp);
+vector<vector<int>> buildGraph(fstream& tsp);
 
 #endif
