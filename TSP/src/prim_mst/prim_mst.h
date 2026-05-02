@@ -6,4 +6,6 @@
 #include <vector>
 #include <tuple>
 
+using namespace std;
+vector<vector<int>> prim_mst( int nodes, vector<vector<int>> graph );
 #endif

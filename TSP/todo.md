@@ -11,7 +11,7 @@
 # Solução Exata (Brute force)
 - [ ] Gerar todas as permutações de vérticas a partir de uma origem fixada
 - [ ] Loopa no array das permutações pra calcular o custo de todos os caminhos
--- [ ] Estabelece regra arbitrária ao conferir a permutação para evitar simetria reversa:
+    - [ ] Estabelece regra arbitrária ao conferir a permutação para evitar simetria reversa:
 
 ex: A B D C A = A C D B A, pra isso, compara o nome do segundo vértice com o último. B > C aceita, mas C > B rejeita
 
@@ -19,17 +19,16 @@ ex: A B D C A = A C D B A, pra isso, compara o nome do segundo vértice com o ú
 
 # Solução Aproximada (MST-DFS)
 - [ ] (SE NECESSÁRIO) Desenvolver funções que confiram se o grafo respeita as propriedades
--- [ ] Desigualdade triângular.
--- [ ] Preparar o grafo pra aplicar o Prim (todas vértices tem ida e volta) 
+    - [ ] Desigualdade triângular.
+    - [ ] Preparar o grafo pra aplicar o Prim (todas vértices tem ida e volta) 
 
-- [ ] Algoritmo de MST (Lazy-Prim)
--- [ ] Estruturas (PQ, Array visited)
--- [ ] 
--- [ ]
+- [x] Algoritmo de MST (Lazy-Prim)
+    - [x] Estruturas (PQ, Array visited, Adjacency List)
+    - [x] Colocar caminhos do nó inicial na fila
 
 - [ ] Algoritmo DFS
--- [ ] 
--- [ ] 
--- [ ] 
+    - [ ] 
+    - [ ] 
+    - [ ] 
 
 - [ ] Junta no 'mst_dfs_approx.cpp' e corta os vértices repetidos
