@@ -7,8 +7,9 @@
 int main (void) {
     // std::cout << "Hello World. Testing TSP!\n 'Optimal' solution...";
 
-    std::fstream tsp ("data/tsp1_253.txt", std::fstream::in);
-    buildGraph(tsp);
-    
-
+    // std::fstream tsp ("data/tsp1_253.txt", std::fstream::in);
+    // buildGraph(tsp);
+    // cout << "hello";
+    vector<int> v = {0, 1, 2};
+    cout << v.size() << "\n";
 }
