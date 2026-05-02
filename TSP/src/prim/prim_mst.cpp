@@ -1,15 +1,17 @@
 #include "prim_mst.h"
+using namespace std;
 
-std::vector<std::vector<int>> mst( int nodes, std::vector<std::vector<int>> graph ) {    // returns an adjacency list || nodes = number of nodes in the graph
-    std::vector<std::vector<int>> adjList;      // adjacency list
-    std::vector<bool> visited(nodes, false);    // visited nodes
+// returns an adjacency list || nodes = number of nodes in the graph
+vector<vector<int>> mst(int nodes, vector<vector<int>> graph) {    
+    vector<vector<int>> adjList;      // adjacency list
+    vector<bool> visited(nodes, false);    // visited nodes
 
     // setting  the priority queue to organize the paths, from least expensive to the most expensive
-    std::priority_queue< 
-        std::tuple<int, int, int>,      // cost, origin, destination
-        std::vector<std::tuple<int, int, int>>,
-        std::greater<std::tuple<int, int, int>>
-        > queue;
+    priority_queue< 
+        tuple<int, int, int>,      // cost, origin, destination
+        vector<tuple<int, int, int>>,
+        greater<tuple<int, int, int>>
+    > queue;
 
 
     return adjList;
