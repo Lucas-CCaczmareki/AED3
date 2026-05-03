@@ -21,7 +21,7 @@ ex: A B D C A = A C D B A, pra isso, compara o nome do segundo vértice com o ú
 
 # Solução Aproximada (MST-DFS)
 - [ ] (SE NECESSÁRIO) Desenvolver funções que confiram se o grafo respeita as propriedades
-    - [ ] Desigualdade triângular.
+    - [x] Desigualdade triângular.
     - [ ] Preparar o grafo pra aplicar o Prim (todas vértices tem ida e volta) 
 
 - [x] Algoritmo de MST (Lazy-Prim)
@@ -32,4 +32,4 @@ ex: A B D C A = A C D B A, pra isso, compara o nome do segundo vértice com o ú
     - [x] criar função recursiva para gerar caminho
     - [x] (SE NECESSÁRIO) criar função para cortar vértices repetidos do caminho
 
-- [ ] Junta no 'mst_dfs_approx.cpp' e faz gerar o valor
+- [x] Junta no 'mst_dfs_approx.cpp' e faz gerar o valor

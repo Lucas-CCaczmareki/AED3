@@ -4,6 +4,8 @@
 #include <fstream>
 #include <random>
 
+double approximate( vector<int> path, vector<vector<int>> graph );
+
 int main () {
     fstream tsp("data/tsp2_1248.txt", fstream::in);
     vector<vector<int>> graph = buildGraph(tsp);
@@ -21,12 +23,7 @@ int main () {
     cout << "origem aleatória: " << origin_idx << "\n";
 
     // cria uma estrutura com visiteds
-    vector<bool> visited; 
-
-    //procurar um jeito melhor de inicializar depois
-    for(int i = 0; i < tree.size(); i++) {
-        visited.push_back(false);
-    }
+    vector<bool> visited(tree.size(), false); 
 
     dfs(origin_idx, tree, path, visited);
 
@@ -35,4 +32,22 @@ int main () {
         cout << x << " ";
     }
     cout << "\n";
+
+    double cost = approximate( path, graph );
+
+    cout << cost;
+}
+
+double approximate( vector<int> path, vector<vector<int>> graph ) {
+    double cost = 0;
+    int i, origin = path[0];
+
+    // soma os custos dos caminhos
+    for( i = 0; i < (path.size() - 1); ++i) {
+        cost += graph[path[i]][path[i + 1]];
+    }
+    // finaliza somando o custo do caminho do último vértice até o primeiro
+    cost += graph[origin][path[i]];
+
+    return cost;
 }
