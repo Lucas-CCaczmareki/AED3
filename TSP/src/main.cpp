@@ -7,6 +7,10 @@
 
 using namespace std;
 
+/*
+arquivo main utilizado para testes.
+Para rodar o algoritmo desejado (bruteforce ou mst_dfs) utilize os respectivos cpp's
+*/
 int main (void) {
     // std::cout << "Hello World. Testing TSP!\n 'Optimal' solution...";
 
