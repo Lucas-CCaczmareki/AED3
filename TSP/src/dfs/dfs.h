@@ -4,6 +4,6 @@
 #include <vector>
 using namespace std;
 
-vector<int> dfs(vector<vector<int>> tree);
+void dfs(int node, vector<vector<int>> tree, vector<int>& path, vector<bool>& visited);
 
 #endif

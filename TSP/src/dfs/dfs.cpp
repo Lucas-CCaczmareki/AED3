@@ -1,44 +1,54 @@
 #include "dfs.h"
-#include "buildgraph/buildgraph.h"
-#include "prim_mst/prim_mst.h"
-#include <fstream>
-#include <stack>
 
 /*
 ATENÇÃO!!!!
-TREE NO PARÂMETRO É REPRESENTADA ATRAVÉS DE UMA LISTA DE ADJACÊCIA
+TREE NO PARÂMETRO É REPRESENTADA ATRAVÉS DE UMA LISTA DE ADJACÊNCIA
 */
-void dfs(vector<vector<int>> tree, vector<int>& path) {
-    //vou escolher arbitrariamente a origem como 0. Mas poderia ser randômica 
-    int origin_idx = 5; // usando 5 pq o exemplo funcionou melhor
+void dfs(int node, vector<vector<int>> tree, vector<int>& path, vector<bool>& visited) {
+    // Na primeira chamada recebe a origem da árvore. Pode ser arbitrariamente o 0, ou randômico. 
+    // A responsabilidade de decidir isso fica pra main.
 
-    // cria uma estrutura com visiteds
-    vector<bool> visited; 
+    if(!visited[node]) { // se o vértice q eu to ainda n foi explorado
+        
+        visited[node] = true;   // explora
+        path.push_back(node);   // salva caminho
 
-    //procurar um jeito melhor de inicializar depois
-    for(int i = 0; i < tree.size(); i++) {
-        visited[i] = 0;
+        // desce por todos filhos i do nó atual
+        for(int i : tree[node]) {
+            dfs(i, tree, path, visited);
+        }
+        
     }
-    visited[origin_idx] = 1;
-
-    // cria uma stack ou usa recursão? em memória tanto faz, vai ter que usar uma mesmo, vou preferir explícita q é mais fácil de pensar
-    stack<int> stk;
-    stk.push(origin_idx);
-
-    // loopa enquanto a stack não estiver vazia?
-    while(!stk.empty()) {
-        // desce sempre pelo primeiro da lista de adjacência
-        // atualiza o path com os pushes na stack (por que precisaria cortar vértices repetidos? armazenar só os pushes já cortaria?)
-
-    }
-
+    //ignora se ja foi visitado
 }
 
-int main () {
-    fstream tsp("data/tsp2_1248.txt", fstream::in);
-    vector<vector<int>> graph = buildGraph(tsp);
-    vector<vector<int>> tree = prim_mst(graph.size(), graph);
-    vector<int> path;
+/* //exemplo de main pra rodar só o dfs e fazer testes
+// int main () {
+//     fstream tsp("data/tsp2_1248.txt", fstream::in);
+//     vector<vector<int>> graph = buildGraph(tsp);
+//     vector<vector<int>> tree = prim_mst(graph.size(), graph);
+//     vector<int> path;
 
-    dfs(tree, path);
-}
+//     //vou escolher arbitrariamente a origem como 0. Mas poderia ser randômica 
+//     int origin_idx = 5; // usando 5 pq o exemplo funcionou melhor
+
+//     // cria uma estrutura com visiteds
+//     vector<bool> visited; 
+
+//     //procurar um jeito melhor de inicializar depois
+//     for(int i = 0; i < tree.size(); i++) {
+//         visited.push_back(false);
+//     }
+//     //por enquanto vou fazer começando fixo no 0
+//     // visited[origin_idx] = true; 
+
+
+//     dfs(3, tree, path, visited);
+
+//     for(int x : path) {
+//         cout << x << " ";
+//     }
+//     cout << "\n";
+// }
+
+*/
