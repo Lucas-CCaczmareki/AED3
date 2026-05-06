@@ -6,6 +6,7 @@
 #include "../prim_mst/prim_mst.h"
 #include <fstream>
 #include <random>
+#include <chrono>
 #include <string>
 
 using namespace std;

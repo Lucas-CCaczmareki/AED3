@@ -76,11 +76,12 @@ void bruteforce( string data ) {
     bestPath opt;
     opt.cost = __INT_MAX__;
 
-    // auto init = chrono::high_resolution_clock::now();
+    auto init = chrono::high_resolution_clock::now();
     permute(v, 0, v.size(), opt, graph);
-    // auto res = chrono::high_resolution_clock::now() - init;
+    auto res = chrono::high_resolution_clock::now() - init;
 
-    // long long milliseconds = chrono::duration_cast<chrono::milliseconds>(res).count();
+    long long microseconds = chrono::duration_cast<chrono::microseconds>(res).count();
+    cout << "tempo de exucação: " << microseconds << "µs\n";
     // cout << "\nretirando simetria reversa: " << milliseconds << "µs\n\n";
     // cout << "\nsem tratar simetria reversa: " << milliseconds << "ms\n\n";
 
