@@ -1,15 +1,5 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include "../buildgraph/buildgraph.h"
-#include <chrono>
-
+#include "bruteforce.h"
 using namespace std; //importa o lugar onde ficam as funções std ai n precisa ficar usando std::
-
-typedef struct {
-    int cost;
-    vector<int> path;
-} bestPath;
 
 void updateCost(vector<int>& v, bestPath& opt, vector<vector<int>>& graph) {
     int cost = 0;
@@ -74,8 +64,8 @@ void permute(vector<int>& v, int l, int r, bestPath& opt, vector<vector<int>>& g
     }
 }
 
-int main() {
-    fstream tsp ("data/tsp1_253.txt", fstream::in);
+void bruteforce( string data ) {
+    fstream tsp (data, fstream::in);
     vector<vector<int>> graph = buildGraph(tsp);    // 1n
     vector<int> v; //vertices
 
@@ -94,7 +84,9 @@ int main() {
     // cout << "\nretirando simetria reversa: " << milliseconds << "µs\n\n";
     // cout << "\nsem tratar simetria reversa: " << milliseconds << "ms\n\n";
 
-    cout << opt.cost << "\nPath: ";
+    cout << "Cost: "<< opt.cost << "\nPath: ";
     for(int x : opt.path) cout << x << " ";
     cout << "\n";
+
+    tsp.close();
 }

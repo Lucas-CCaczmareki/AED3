@@ -1,13 +1,9 @@
-#include "../dfs/dfs.h"
-#include "../buildgraph/buildgraph.h"
-#include "../prim_mst/prim_mst.h"
-#include <fstream>
-#include <random>
+#include "mst_dfs.h"
 
 double approximate( vector<int> path, vector<vector<int>> graph );
 
-int main () {
-    fstream tsp("data/tsp2_1248.txt", fstream::in);
+void mst_dfs( string data ) {
+    fstream tsp(data, fstream::in);
     vector<vector<int>> graph = buildGraph(tsp);
     vector<vector<int>> tree = prim_mst(graph.size(), graph);
     vector<int> path;
@@ -20,7 +16,7 @@ int main () {
     mt19937 gen(rd());
     uniform_int_distribution<> distrib(0, (tree.size() - 1));
     origin_idx = distrib(gen);
-    cout << "origem aleatória: " << origin_idx << "\n";
+    cout << "Origem aleatoria: " << origin_idx << "\n";
 
     // cria uma estrutura com visiteds
     vector<bool> visited(tree.size(), false); 
@@ -28,6 +24,7 @@ int main () {
     dfs(origin_idx, tree, path, visited);
 
     // printa o caminho do dfs
+    cout << "Path: ";
     for(int x : path) {
         cout << x << " ";
     }
@@ -35,7 +32,10 @@ int main () {
 
     double cost = approximate( path, graph );
 
-    cout << cost;
+    cout << "Cost: " << cost;
+    cout << "\n";
+
+    tsp.close();
 }
 
 double approximate( vector<int> path, vector<vector<int>> graph ) {

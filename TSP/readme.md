@@ -1,10 +1,7 @@
 # TSP Problem
 ### RUN INSIDE AED3/TSP
-**compile command for brute force:** g++ src/optimal_tsp/bruteforce.cpp src/buildgraph/buildgraph.cpp -o output/optimal
-**run command:** output/insertname
-
-**compile command for mst-dfs:** g++ src/approximate_tsp/mst_dfs.cpp src/buildgraph/buildgraph.cpp src/dfs/dfs.cpp src/prim_mst/prim_mst.cpp -o output/approximate
-**run command:** output/approximate
+**compile command:** g++ src/dfs/dfs.cpp src/buildgraph/buildgraph.cpp src/prim_mst/prim_mst.cpp src/approximate_tsp/mst_dfs.cpp src/optimal_tsp/bruteforce.cpp src/main.cpp -o output/main
+**run command:** ./output/main
 
 ## Soluções exatas:
 **- Brute force:** testa todos os caminhos possíveis. O(n!)
