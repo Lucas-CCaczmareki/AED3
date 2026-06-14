@@ -1,9 +1,45 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cstring>
 #include <openssl/evp.h> //traz uma interface com vários algoritmos do openssl, o SHA-256 q eu quero testar é um deles
 
 using namespace std;
+
+void testString(EVP_MD_CTX& ctx, string& prefix, int size, vector<unsigned char>& hash) {
+    
+    if(size == 128) { return; } 
+
+    //entramos com jd, size é o tanto de recursão que isso vai fazer
+    string keyTry;
+    keyTry += prefix;
+
+    for (int i = 0; i < 128; i++) {
+        // Onde o resultado vai ser guardado
+        unsigned char resultado[32]; // SHA-256 sempre gera 32 bytes
+        unsigned int tamanho;     
+
+        keyTry.push_back((char)i);
+
+        EVP_DigestInit_ex(&ctx, EVP_sha256(), nullptr);
+        EVP_DigestUpdate(&ctx, keyTry.c_str(), keyTry.size()); //envia a string de entrada pro algoritmo do contexto
+        EVP_DigestFinal_ex(&ctx, resultado, &tamanho);   //executa o algoritmo no ctx, joga a saída pra dentro de resultado e o tamanho dela pra &tamanho
+
+        //testa se bate com a chave original
+        if (memcmp(resultado, hash.data(), 32) == 0) {
+            ofstream out("data/senha.txt");
+            out << keyTry;
+            out.close();
+            return;
+        }
+
+        //aqui inicia o bruteforce (adeus linux)
+        testString(ctx, keyTry, size + 1, hash);
+
+        keyTry.pop_back();
+    }
+
+}
 
 /*
 Objetivo desse .cpp aqui vai ser quebrar a hash em "key_for_rsa_public.hash"
@@ -35,11 +71,7 @@ int main () {
     // 2. Update, alimenta os dados, dá pra chamar várias vezes
     // 3. Final, finaliza e pega o resultado
 
-    std::string input = "jd"; // string de input pra calcular a hash
-    
-    // Onde o resultado vai ser guardado
-    unsigned char resultado[32]; // SHA-256 sempre gera 32 bytes
-    unsigned int tamanho;
+    std::string prefix = "jd"; // string de input pra calcular a hash
 
     // O openSSL funciona através de um contexto
     // em termos simples é uma struct que vai guardar informações pro algoritmo conseguir continuar a execução dele
@@ -48,28 +80,16 @@ int main () {
 
     //usa um método pra dizer pro contexto qual o algoritmo que ele vai usar
     //sem engine (nullptr), ela permite delegar as operações criptográficas p/ outro hardware ou biblioteca, mas fodase por enquanto
-    EVP_DigestInit_ex(ctx, EVP_sha256(), nullptr); 
-    
-    // ------------------------------------------------------------------------------
-    /*
-    eu vou implementar um bruteforce exaustivo, testa todas strings que começam por jd com tamanho 2, dps todas com tamanho 3,
-    dps todas com tamanho 4, até testar todas combinações possíveis da tabela ascii ou encontrar a senha.
-    */
-   
+    EVP_DigestInit_ex(ctx, EVP_sha256(), nullptr);
 
+    testString(*ctx, prefix, 3, bytes);
 
-    EVP_DigestUpdate(ctx, input.c_str(), input.size()); //envia a string de entrada pro algoritmo do contexto
-    EVP_DigestFinal_ex(ctx, resultado, &tamanho);   //executa o algoritmo no ctx, joga a saída pra dentro de resultado e o tamanho dela pra &tamanho
+    EVP_MD_CTX_free(ctx); //libera o contexto pq ele é alocado na heap    
 
-
-    // ------------------------------------------------------------------------------
-
-    EVP_MD_CTX_free(ctx); //libera o contexto pq ele é alocado na heap
-
-    // Imprime o hash em hex
-    for (int i = 0; i < 32; i++) {
-        printf("%02x ", resultado[i]);
-    }
-    printf("\n");
+    // // Imprime o hash em hex
+    // for (int i = 0; i < 32; i++) {
+    //     printf("%02x ", resultado[i]);
+    // }
+    // printf("\n");
 
 }

@@ -28,3 +28,6 @@ de 256 bits.
 
 - (lucas) ele nos dá o início da "senha". Como senha e chave são meio que intercambiáveis fica ambíguo, MAS, ele só usa senha pra
 se referer ao "key_for_rsa_public" e nos outros ele usa chave, então provavelmente é aqui que eu tenho que usar aquela dica de senha.
+
+- (lucas) to implementando um bruteforce exaustivo com a tabela ascii normal pra tentar quebrar a hash do professor. Pode ser que de
+errado e eu precise fazer isso pra tabela ascii estendida. A noraml tem 128 caracteres (0 a 128) e mapeiam diretamente pra 1 inteiro.
