@@ -1,0 +1,8 @@
+- (lucas) Analisei arquivos. key_public, message.en, key_for_rsa_public.en parecem estar em base64 (final '=' indica padding)
+    -- key_for_message.en já parece ser binário.
+
+- (lucas) usei comandos para converter arquivos que pareciam estar codificados em base64 para binário
+    -- comando: base64 -d arq_IN.en > arq_OUT.bin
+    -- decodifiquei message.en, key_public.en, key_for_rsa_public.hash
+
+- 
