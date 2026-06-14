@@ -5,4 +5,26 @@
     -- comando: base64 -d arq_IN.en > arq_OUT.bin
     -- decodifiquei message.en, key_public.en, key_for_rsa_public.hash
 
-- 
+- (lucas) teoricamente o RSA é lento, e ele é aplicado pra cifrar a senha do algoritmo que cifra a mensagem. Então tem 2 algoritmos
+que cifram coisas sendo utilizados (dá pra inferir isso com base no número e nome dos arquivos).
+
+- (lucas) Assumindo que RSA cifra "key_for_message.en". O primeiro passo é decifrar a chave que cifra a mensagem.
+
+- (lucas) Como o nome da tarefa é AES-RSA, eu to assumindo no fodase que a message.en ta cifrada com o AES kkkkkkkkkk
+
+- (lucas) Então, focando nos arquivos do RSA primeiro: "key_for_rsa_public.hash" e "key_public.en". O primeiro, segundo o enunciado
+é uma chave para acessar a chave pública, e ta protegida por hash.
+
+- (lucas) O primeiro passo é dar um jeito de quebrar essa hash. O que eu sei, é que dependendo do algoritmo que foi utilizado
+a gente tem hashes de tamanho diferente. Assumindo que "key_for_rsa_public.hash" ta mesmo em Base64, precisamos converter pra .bin
+e testar.
+
+- (lucas) usando o comando wc(word count) com flag -c pra contar em bytes, o arquivo "key_for_rsa_public.hash" tem 45 bytes
+e convertido de Base64 pra binário ele tem 32 bytes (wc -c arquivo.bin). Isso dá um aumento de ~40,6% no tamanho do arquivo,
+o esperado era ~33% de binário pra Base64, é um ponto de ATENÇÃO
+
+- (lucas) Como é 32 bytes de tamanho (256 bits), provavelmente o algoritmo de hash usado foi o SHA-256 que produz uma saída
+de 256 bits.
+
+- (lucas) ele nos dá o início da "senha". Como senha e chave são meio que intercambiáveis fica ambíguo, MAS, ele só usa senha pra
+se referer ao "key_for_rsa_public" e nos outros ele usa chave, então provavelmente é aqui que eu tenho que usar aquela dica de senha.

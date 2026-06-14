@@ -1,0 +1,3 @@
+- compilar: g++ file -o outputFile -lssl -lcrypto
+-- "-lssl" linka a biblioteca ssl
+-- "-lcrypto" linka a bilbioteca de criptografia do openssl
