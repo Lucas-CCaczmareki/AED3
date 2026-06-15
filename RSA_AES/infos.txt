@@ -50,7 +50,7 @@ pra rodar. Finalizei processo
 algoritmo, ao invés de testar as senhas de menor tamanho primeiro, ele vai e começa testando as de maior (c/ um limite superior) e
 vai descendo até um limite inferior. 
 
-- (lucas) consegui quebrar até o tamanho 8 e não achei a senha (usando minúsculos e números)
+- (lucas) consegui quebrar até o tamanho 9 e não achei a senha (usando minúsculos e números)
 
 - (lucas) IDEIA: usar threads pra paralelizar o processo como se fosse uma busca bidirecional. 1 inicia no limite 8 e sobe até o
 limite superior, a outra inicia no limite superior e desce até o inferior, se alguma bater na senha para o processo. Dá pra aumentar
