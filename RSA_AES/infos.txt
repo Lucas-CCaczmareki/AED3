@@ -39,3 +39,20 @@ dps pra hexadecimal(hexa_key_for_rsa_public)
     -- a partir de 9 o tempo de execução aumentou bastante, com 10(12 com o "jd") caracteres a estimativa no meu pc foi de 9h mais ou menos
     -- o algritmo de hash usado foi o SHA2-256(flag -m 1400)
     -- para +10 caracteres e apenas letras minusculas: hashcat -a 3 -m 1400 hexa_key_for_rsa_public.hash "jd?l?l?l?l?l?l?l?l?l?l" -O -w 4
+
+- (lucas) tabela ascii inteira é impossivel testar, limitei a profundidade à 8 caracteres de senha e não vai achar, tb demorou mt
+pra rodar. Finalizei processo
+
+- (lucas) tentei limitar a busca à 12 de profundidade testando só senhas com caracteres minúsculos e números. Vou deixar rodando 
++- 1 hora. Não deu em nada, provavelmente inviavel rodar desde o início.
+
+- (lucas) IDEIA: vou rodar pra tamanhos menores e executáveis, em busca de um limite inferior, depois vou inverter a lógica do
+algoritmo, ao invés de testar as senhas de menor tamanho primeiro, ele vai e começa testando as de maior (c/ um limite superior) e
+vai descendo até um limite inferior. 
+
+- (lucas) consegui quebrar até o tamanho 8 e não achei a senha (usando minúsculos e números)
+
+- (lucas) IDEIA: usar threads pra paralelizar o processo como se fosse uma busca bidirecional. 1 inicia no limite 8 e sobe até o
+limite superior, a outra inicia no limite superior e desce até o inferior, se alguma bater na senha para o processo. Dá pra aumentar
+o número de threads dividindo por 2, por exemplo, o inferior até o meio, do meio ao inferiro, do meio ao superior e do superior ao meio.
+
