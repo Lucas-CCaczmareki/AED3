@@ -56,3 +56,5 @@ vai descendo até um limite inferior.
 limite superior, a outra inicia no limite superior e desce até o inferior, se alguma bater na senha para o processo. Dá pra aumentar
 o número de threads dividindo por 2, por exemplo, o inferior até o meio, do meio ao inferiro, do meio ao superior e do superior ao meio.
 
+- (lucas) as minhas ideias são boas, mas seria implementar o hashcat na mão. Me rendi a ele, testando com o comando indicado pela celina para 
+12 caracteres (jd + 10) já tá dando uma estimativa de 20 horas pra quebrar o hash considerando APENAS letras minúsuculas.
