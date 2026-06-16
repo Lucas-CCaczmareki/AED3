@@ -8,13 +8,15 @@ using namespace std;
 
 void testString(EVP_MD_CTX& ctx, string& prefix, int size, vector<unsigned char>& hash) {
     
-    if(size == 12) { return; } 
+    if(size == 9) { return; } 
 
     //entramos com jd, size é o tanto de recursão que isso vai fazer
     string keyTry;
     keyTry += prefix;
 
-    for (int i = 0; i < 128; i++) {
+    for (int i = 48; i <= 122; i++) { //vai só de números até todas letra minuscula
+        if(i > 57 && i < 97) { continue; } //skippa caracter q n é número e maiusculo
+
         // Onde o resultado vai ser guardado
         unsigned char resultado[32]; // SHA-256 sempre gera 32 bytes
         unsigned int tamanho;     
@@ -33,7 +35,8 @@ void testString(EVP_MD_CTX& ctx, string& prefix, int size, vector<unsigned char>
             return;
         }
 
-        //aqui inicia o bruteforce (adeus linux)
+        //aqui inicia o bruteforce como uma busca em profundidade (adeus linux)
+        // ou seja ele vai tudo pra baixo dps volta, pode ser ruim se o professor pediu uma senha fácil de poucos caracteres
         testString(ctx, keyTry, size + 1, hash);
 
         keyTry.pop_back();
