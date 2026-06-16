@@ -8,7 +8,7 @@ using namespace std;
 
 void testString(EVP_MD_CTX& ctx, string& prefix, int size, vector<unsigned char>& hash) {
     
-    if(size == 128) { return; } 
+    if(size == 12) { return; } 
 
     //entramos com jd, size é o tanto de recursão que isso vai fazer
     string keyTry;
