@@ -58,3 +58,20 @@ o número de threads dividindo por 2, por exemplo, o inferior até o meio, do me
 
 - (lucas) as minhas ideias são boas, mas seria implementar o hashcat na mão. Me rendi a ele, testando com o comando indicado pela celina para 
 12 caracteres (jd + 10) já tá dando uma estimativa de 20 horas pra quebrar o hash considerando APENAS letras minúsuculas.
+
+- (celina) "key_public.bin" testes com várias criptografias simétricas no openssl pra encontrar a chave pública do rsa 
+    -- openssl aes-128-cfb -nosalt -d -in key_public.bin -out key_public_decAES128CFB.txt -pass pass:jdeycpaovnqu
+    -- openssl aes-256-cbc -nosalt -d -in key_public.bin -out key_public_decAES256CBC.txt -pass pass:jdeycpaovnqu
+    -- openssl aes-256-ecb -nosalt -d -in key_public.bin -out key_public_decAES256ECB.txt -pass pass:jdeycpaovnqu
+    -- openssl des-ede-cfb -nosalt -d -in key_public.bin -out key_public_decDESEDECFB.txt -pass pass:jdeycpaovnqu
+    -- openssl des-ede-ofb -nosalt -d -in key_public.bin -out key_public_decDESEDEOFB.txt -pass pass:jdeycpaovnqu
+    -- openssl aes-256-cfb -nosalt -d -in key_public.bin -out key_public_decAES256CFB.txt -pass pass:jdeycpaovnqu
+    -- Com este deu certo -> openssl aes-256-ofb -nosalt -d -in key_public.bin -out key_public_decAES256OFB.txt -pass pass:jdeycpaovnqu
+    -- troquei o arquivo pra .pem pra diferenciar
+
+- (celina) testei com mais antes de achar a correta mas n cataloguei, praticamente fiz com todas do AES e a maioria do DES q mostrava no 
+openssl -h, o comando q deu certo(aes-256-ofb) eu tive q ir pesquisar pq n mostrava 
+
+- (celina) consegui extrair N, o openssl tbm tem comando para isso
+    -- openssl pkey -pubin -in key_public_decAES256OFB.pem -text -noout
+    -- O comando extrai o par e(Exponent) e N(Modulus), coloquei a saída em "N.txt"
