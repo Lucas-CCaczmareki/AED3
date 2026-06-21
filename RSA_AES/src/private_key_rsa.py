@@ -1,0 +1,15 @@
+from Crypto.PublicKey import RSA
+from Crypto.Util.number import inverse
+
+n = 27303911352989470248928971431479088222170782447991120665670669784387553995747545547406419959802490512332817447373131
+p = 4626697413647053914069547317933602225724580214210133185987
+q = 5901382543940086616477167938960980049903367655535121341913
+e = 65537
+phi = (p - 1) * (q - 1)
+d = inverse(e,phi)
+
+componentes = (n,e,d,p,q)
+chave_privada = RSA.construct(componentes)
+
+print("Chave Privada:")
+print(chave_privada.export_key(format='PEM').decode('utf-8'))

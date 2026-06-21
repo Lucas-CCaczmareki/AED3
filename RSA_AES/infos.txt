@@ -105,3 +105,12 @@ e implementar essas otimizacoes na mao é excessivamente complexo e nao é o obj
 - (lucas) deixei o sagemath rodando por mais de 3 horas, ele imprimiu 2 txts de erro vazios. Nao deu certo, nao era pra ter demorado
 tanto tempo assim. Vou tentar rodar o cado-nfs. Ficou rodando por 40 min, encontramos o p e o q. Celina vai assumir e quebrar a mensagem
 
+- (celina) com o p e o q a gente consegue a chave privada do RSA, descrobri uma biblioteca em python q faz isso, a PyCryptodome 
+ela n é difícil de usar, o código ta em "private_key_rsa.py" e a chave privada em "key_private.pem"
+o cógigo é bem simples, primeiro calcula o ϕ, dps usa uma função da biblioteca pra calcular o d e junta tudo(n,e,d,p,q) formando a chave privada
+
+- (celina) usando openssl pra descriptografar a key_for_message.en 
+    -- openssl pkeyutl -decrypt -inkey key_private.pem -in key_for_message.en -out key_message.txt
+
+- (celina) aparentemente deu outra chave AES, vou testar na mensagem com o msm comando q tinha usado pra key_public pra ver se é a msm coisa
+    -- openssl aes-256-ofb -nosalt -d -in message.bin -out message.txt -pass pass:xosesxojipdj
