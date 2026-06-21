@@ -101,3 +101,7 @@ Recebi N = 273039113529894702489289714314790882221707824479911206656706697843875
 pra fatorar o número, ele implementa algoritmos matemáticos como Self-Initializing Quadratic Sieve (SIQS) e Elliptic curve method (ECM) pra otimizar a fatoracao.
 Como visto na tentativa de implementar um bruteforce trivial, rodar um programa trivial levaria mais tempo do que temos disponível, 
 e implementar essas otimizacoes na mao é excessivamente complexo e nao é o objetivo do trabalho.
+
+- (lucas) deixei o sagemath rodando por mais de 3 horas, ele imprimiu 2 txts de erro vazios. Nao deu certo, nao era pra ter demorado
+tanto tempo assim. Vou tentar rodar o cado-nfs.
+
