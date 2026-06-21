@@ -75,3 +75,29 @@ openssl -h, o comando q deu certo(aes-256-ofb) eu tive q ir pesquisar pq n mostr
 - (celina) consegui extrair N, o openssl tbm tem comando para isso
     -- openssl pkey -pubin -in key_public_decAES256OFB.pem -text -noout
     -- O comando extrai o par e(Exponent) e N(Modulus), coloquei a saída em "N.txt"
+
+- (lucas) Joguei o N(1674433695830467639706494459561841890558060714439453245436568893498686100907796170543898203456285574571510846310731) 
+extraido no factordb.com, ele me entregou que o N tinha 5 fatores, ou sejam tem algo
+de errado com o nosso N. Já que pelo teorema fundamental da aritmetica o numero N só tem uma combinacao de
+fatores primos no mundo q resulta nele. Como o site pode ta simplesmente errado talvez eu precise tentar fatorar via algoritmo.
+
+- (lucas) ta, eu refiz os passos pra tirar a criptografia "AES256OFB" de cima do "key_public.en". 
+Pelo que eu entendi, o openssl só tira a criptografia q tava em cima de um texto, esse texto 
+ainda ta codificado em base64 pelo formato e caracteres utilizado (alfabeto, numeros e + e /).
+
+- (lucas) rodei o comando do openssl, igual o que a celina rodou antes só com caminhos do arquivo diferente (pro arquivo que
+eu decodifiquei refazendo o caminho dela pra testar). Consegui a mesma saida:  tamanho de public key igual e N em hexadecimal
+iguais. provavelmente algum erro de conversao do hexadecimal.
+
+- (lucas) O N hexadecimal vem num formato específico, padrão em vários algoritmos/softwares de criptografia e
+o openssl utiliza ele (ASN.1), o 00 não faz parte do número hexadecimal, é apenas padding do formato.
+
+- (lucas) Rodei um casting em python de hexa pra int com o número hexadecimal. 
+python3 -c "print(int('b165a7cd36c8892fdff40b5a1d000ccca73e854c53fab80238d0e548ac9f361ab3fede507d12fb10b2f7840ad461c94b', 16))"
+Recebi N = 27303911352989470248928971431479088222170782447991120665670669784387553995747545547406419959802490512332817447373131
+é um N diferente do que a gente tinha conseguido antes.
+
+- (lucas) O N não tava no factordb.com, vou usar o sagemath(yafu e msieve n tinham no arch, tavam dando conflito de versao)
+pra fatorar o número, ele implementa algoritmos matemáticos como Self-Initializing Quadratic Sieve (SIQS) e Elliptic curve method (ECM) pra otimizar a fatoracao.
+Como visto na tentativa de implementar um bruteforce trivial, rodar um programa trivial levaria mais tempo do que temos disponível, 
+e implementar essas otimizacoes na mao é excessivamente complexo e nao é o objetivo do trabalho.

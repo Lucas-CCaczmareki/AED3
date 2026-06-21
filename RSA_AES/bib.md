@@ -10,5 +10,5 @@
 - Hash:       https://youtu.be/UtCcMuiE0TE?si=67FDfxaP2imFW0P3
               https://youtu.be/zJTMLwZrNyw?si=Ya0Wls3borKcDWek
 
-git
+- ASN1: https://docs.openssl.org/3.5/man1/openssl-asn1parse/
 

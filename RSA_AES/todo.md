@@ -1,1 +1,0 @@
-[ ] Revisão do conteúdo visto em aula (Medium)
