@@ -1,7 +1,7 @@
 #pragma once
 #include "Board.h"
 #include "FrontierExtractor.h"
-#include "MonteCarloSolver.h" // reaproveita PairHash
+#include "PairHash.h" // reaproveita PairHash
 #include <unordered_map>
 
 namespace ms {

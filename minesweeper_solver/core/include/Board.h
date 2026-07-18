@@ -9,9 +9,9 @@ namespace ms {
 enum class CellState { Covered, Revealed, Flagged };
 
 struct Cell {
-    bool isMine = false;
-    int adjacentMines = 0;
-    CellState state = CellState::Covered;
+    bool isMine = false;                    //a bandenderinha que marca a célula
+    int adjacentMines = 0;                  //numero que a casinha mostra
+    CellState state = CellState::Covered;   //estado dela, pode ser econdida, revelada (aparece numero) ou marcada
 };
 
 class Board {
@@ -33,7 +33,10 @@ private:
     // usa uma convenção "_" para diferenciar atributos privados de atributos locais com mesmo nome.
     int width_;
     int height_;
-    std::vector<Cell> cells_;
+
+    // acesso com (coluna, linha) = (x, y)
+    // isso acontece pq em comp gráfica, coluna é x e linha é o y.
+    std::vector<Cell> cells_; 
 };
 
 } // namespace ms

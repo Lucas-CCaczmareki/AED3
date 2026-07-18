@@ -6,6 +6,8 @@ else
     GENERATOR :=
 endif
  
+.PHONY: build run clean
+
 build:
 	mkdir -p build
 	cd build && cmake .. $(GENERATOR) && cmake --build .
