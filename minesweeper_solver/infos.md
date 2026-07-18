@@ -1,5 +1,16 @@
 ## Divisão das tarefas para organização
 
+## Tracking
+- [ ] Passo 1
+- [ ] Passo 2
+- [X] Passo 3
+- [ ] Passo 4
+- [ ] Passo 5
+- [ ] Passo 6
+- [ ] Passo 7
+- [ ] Passo 8
+- [ ] Passo 9
+- [ ] Relatório
 
 (celina)
 ### Passo 1 — `Board` e `BoardGenerator`
