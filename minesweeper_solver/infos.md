@@ -1,5 +1,16 @@
 ## Divisão das tarefas para organização
 
+## Tracking
+- [ ] Passo 1
+- [ ] Passo 2
+- [X] Passo 3
+- [ ] Passo 4
+- [ ] Passo 5
+- [ ] Passo 6
+- [ ] Passo 7
+- [ ] Passo 8
+- [ ] Passo 9
+- [ ] Relatório
 
 (celina)
 ### Passo 1 — `Board` e `BoardGenerator`
@@ -34,7 +45,6 @@
   (seção 3.3).
 - Parâmetro: número de amostras/candidatos a gerar.
 - Retorna probabilidade estimada de bomba para cada célula da fronteira.
-- Para células fora da fronteira, usa a fórmula uniforme da seção 3.2.
 
 (lucas)
 ### Passo 6 — `AutoPlayer`

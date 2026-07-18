@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 
 // namespace evita que dê conflito com alguma outra classe Cell por exemplo (vaiq o qt tem uma ne)
 // pra usar só faz um ms::Cell, ou declara que ta usando esse namespace
@@ -29,6 +30,9 @@ public:
     // Diz se tá nos limites do tabuleiro
     bool inBounds(int x, int y) const;
 
+    // Pega os vizinhos de uma determinada celula 
+    std::vector<std::pair<int, int>> neighbors(int x, int y) const;
+    
 private:
     // usa uma convenção "_" para diferenciar atributos privados de atributos locais com mesmo nome.
     int width_;

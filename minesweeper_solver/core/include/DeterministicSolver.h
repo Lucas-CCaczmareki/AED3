@@ -13,7 +13,7 @@ struct DeductionResult {
 class DeterministicSolver {
 public:
     // Aplica regras deterministicas ate estabilizar. Retorna o que foi deduzido.
-    static DeductionResult solve(Board& board);
+    static DeductionResult solve(Board& board, const std::vector<std::pair<int,int>>& frontierNumbers);
 };
 
 } // namespace ms
