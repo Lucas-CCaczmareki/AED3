@@ -3,6 +3,7 @@
 
 namespace ms {
 
+// Cria um tipo novo com valores limitados
 enum class GameResult { Ongoing, Won, Lost };
 
 class AutoPlayer {

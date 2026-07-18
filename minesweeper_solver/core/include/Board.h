@@ -5,6 +5,7 @@
 // pra usar só faz um ms::Cell, ou declara que ta usando esse namespace
 namespace ms {
 
+// Cria um tipo novo com valores limitados
 enum class CellState { Covered, Revealed, Flagged };
 
 struct Cell {

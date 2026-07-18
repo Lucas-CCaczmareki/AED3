@@ -11,7 +11,7 @@ public:
 
     /*
         O compilador padrão do C++ não sabe gerar um número de hash a partir da chave pair<int, int> (que usamos pra representar coordenada)
-        por isso, criamos uma função que faz o número de hash desse par e enviamos como parâmetro pra hashtable do C.
+        por isso, criamos uma função que faz o número de hash(chave) desse par e enviamos como parâmetro pra hashtable do C.
     */
 
     // Testa TODAS as 2^n disposicoes possiveis da fronteira.
