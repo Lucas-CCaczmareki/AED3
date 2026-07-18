@@ -45,7 +45,6 @@
   (seção 3.3).
 - Parâmetro: número de amostras/candidatos a gerar.
 - Retorna probabilidade estimada de bomba para cada célula da fronteira.
-- Para células fora da fronteira, usa a fórmula uniforme da seção 3.2.
 
 (lucas)
 ### Passo 6 — `AutoPlayer`
