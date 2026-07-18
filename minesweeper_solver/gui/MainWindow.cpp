@@ -1,7 +1,17 @@
-#include "MainWindow.h"
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
-    setWindowTitle("Minesweeper Solver");
-    resize(600, 600);
-    // TODO: adicionar BoardWidget e ControlsPanel aqui
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    QFont font = ui->label->font();
+    font.setPointSize(20);
+    ui->label->setFont(font);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
 }

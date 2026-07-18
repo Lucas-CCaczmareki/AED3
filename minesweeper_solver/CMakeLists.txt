@@ -48,9 +48,11 @@ if(Qt6_FOUND)
 
     add_executable(minesweeper_gui
         gui/main.cpp
-        gui/MainWindow.cpp
+        gui/mainwindow.cpp
         gui/BoardWidget.cpp
         gui/ControlsPanel.cpp
+        gui/mainwindow.h
+        gui/mainwindow.ui
     )
     target_link_libraries(minesweeper_gui PRIVATE core Qt6::Widgets)
 else()
