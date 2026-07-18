@@ -10,6 +10,25 @@
 
 ---
 
+# Setup
+
+## Pra rodar no VSCode
+**Pré-requisitos:** compilador C++, CMake, extensões C/C++ e CMake Tools
+
+**Depois:**
+```bash
+make run
+```
+
+## Pra rodar no Qt Creator
+**Pré-requisitos:** Qt 6 (com Qt Widgets) + Qt Creator instalados
+
+**Depois:**
+1. `File → Open File or Project` → selecionar o `CMakeLists.txt` da raiz
+2. Escolher o Kit do Qt6
+3. Selecionar target `minesweeper_gui` → Run
+
+
 ## 1. Ideia geral do trabalho
 
 O Campo Minado (Minesweeper) é comprovadamente **NP-completo** (Kaye, 2000): dado um
