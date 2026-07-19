@@ -97,9 +97,9 @@ struct ErrorStats {
 int main() {
     std::cout << "Benchmark: MonteCarloSolver (travessia unica, corrigido) vs BruteForce...\n";
 
-    const int width = 80;
-    const int height = 80;
-    const int mineCount = 1280;
+    const int width = 64;
+    const int height = 64;
+    const int mineCount = 860;
     const int safeX = 22;
     const int safeY = 22;
     const int numTrials = 100;
