@@ -7,14 +7,6 @@
 
 namespace ms {
 
-// enum class SafeZoneMode {NoBomb, ZeroGuaranteed}; 
-
-// struct ConfigSafeZone {
-//     SafeZoneMode safeZone = SafeZoneMode::ZeroGuaranteed; // valor padrao do campo da safe zone é 0, ou seja, a celula q vai abrir vai ser 0 garantido
-//     int range = 1; // usa quando for NoBomb
-//     // infelizmente vai ficar quadrada a safe zone inicial, dps eu mexo nisso
-// };
-
 class BoardGenerator {
 public:
     // Gera tabuleiro width x height com mineCount minas, garantindo

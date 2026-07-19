@@ -1,8 +1,8 @@
 ## Divisão das tarefas para organização
 
 ## Tracking
-- [ ] Passo 1
-- [ ] Passo 2
+- [X] Passo 1
+- [X] Passo 2
 - [X] Passo 3
 - [ ] Passo 4
 - [ ] Passo 5
