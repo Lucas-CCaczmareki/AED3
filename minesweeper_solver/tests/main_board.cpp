@@ -7,6 +7,7 @@
 using namespace ms;
  
 void printBoard(const Board& board) {
+    int countBombs = 0;
     for (int y = 0; y < board.height(); y++) {
         std::cout << "y = " << y << "-> ";
         for (int x = 0; x < board.width(); x++) {
@@ -14,6 +15,7 @@ void printBoard(const Board& board) {
             const Cell& cell = board.at(x, y);
             if (cell.isMine) {
                 std::cout << "(*) ";
+                countBombs++;
             } else if (cell.adjacentMines == 0) {
                 std::cout << "(.) ";
             } else {
@@ -23,6 +25,7 @@ void printBoard(const Board& board) {
         }
         std::cout << "\n";
     }
+    std::cout << countBombs;
 }
 
 int main() {

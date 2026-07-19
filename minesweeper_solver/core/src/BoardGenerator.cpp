@@ -30,7 +30,7 @@ Board BoardGenerator::generate(int width, int height, int mineCount, int safeX, 
     std::random_device rd; // cria uma seed, da pra fixar a seed dps pro tabuleiro ser sempre o msm
     std::mt19937 rng(rd());
     std::shuffle(candidates.begin(), candidates.end(), rng); // shuffle reorganiza o vetor aleatóriamente, vou pegar a quantidade de bombas necessárias pelo começo do vetor
-    for(int i = 0; i <= mineCount + 1; i++) {
+    for(int i = 0; i < mineCount; i++) {
         int x = candidates[i].first;
         int y = candidates[i].second;
         board.at(x, y).isMine = true;
