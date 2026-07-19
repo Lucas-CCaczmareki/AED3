@@ -18,6 +18,9 @@ add_library(core STATIC
     core/src/MonteCarloSolver.cpp
     core/src/BruteForceSolver.cpp
     core/src/AutoPlayer.cpp
+    core/src/MonteCarloPureSolver.cpp
+    core/src/MonteCarloContSolver.cpp
+    
 )
 target_include_directories(core PUBLIC core/include)
 

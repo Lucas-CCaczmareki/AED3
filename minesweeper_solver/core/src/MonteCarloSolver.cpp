@@ -6,7 +6,7 @@ std::unordered_map<std::pair<int,int>, double, PairHash>
 MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int numSamples) {
     
     timeoutOccurred_ = false;
-    auto endTime = std::chrono::high_resolution_clock::now() + std::chrono::minutes(1);
+    auto endTime = std::chrono::high_resolution_clock::now() + std::chrono::minutes(2);
 
     // reseta o estado da instância antes de cada uso
     constraints_.clear();
@@ -14,51 +14,35 @@ MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int num
     validSolutions_.clear();
     variableConstraints_.clear();
     rng_.seed(std::random_device{}());
+    nodesVisited_ = 0;
+    abortedAttempts_ = 0;
 
     // Isso retorna uma porcentagem de chance de bomba pra cada variável (célula enscondida da fronteira)
     std::unordered_map<std::pair<int,int>, double, PairHash> result;
     std::unordered_map<std::pair<int, int>, int, PairHash> currAssignments;  // vazio
     numSamples_ = numSamples;
 
-    // TODO: gerar numSamples disposicoes (idealmente via backtracking com poda),
-    // filtrar validas, contar frequencia de bomba por celula, dividir pelo total valido.
-
     buildConstraints(board, frontier);
     sortVariables(frontier);
     
-    // roda desde o início sempre que achar uma sample válida para
-    // e inicia do começo de novo. Isso garante mais aleatoriedade
-    // (antes ele rodava como um DFS, então ficava preso num lado da árvore só)
+    // CORREÇÃO: antes tinha um while() aqui que reiniciava currAssignments.clear() e chamava
+    // backtrack(0, ...) de novo do ZERO toda vez que uma amostra era achada (ou uma tentativa
+    // era abortada). Isso fazia a árvore inteira ser re-percorrida do início pra cada amostra
+    // individual. Em fronteiras grandes, isso é ordens de magnitude mais lento que uma
+    // travessia única (o mesmo motivo pelo qual o BruteForceSolver, que faz só UMA chamada de
+    // backtrack, ficava mais rápido que o Monte Carlo em fronteiras de 70-100+ células, o que
+    // não devia acontecer já que o Monte Carlo é a abordagem que deveria escalar melhor).
     //
-    // ADIÇÃO: cada tentativa agora tem um orçamento de nós (nodeLimit_). Se estourar,
-    // a busca aborta aquela tentativa (não conta como sample) e tenta de novo do zero
-    // com um caminho novo (shuffle diferente). Isso evita herdar o pior caso exponencial
-    // do CSP subjacente, em vez de travar, ele degrada (menos amostras) mas sempre retorna.
-    // maxAttempts_ é uma rede de segurança pra não ficar em loop indefinido em boards
-    // patológicos onde quase nenhuma tentativa fecha dentro do orçamento.
-    int attempts = 0;
-    int maxAttempts = numSamples_ * maxAttemptsMultiplier_;
-    
-    while ((int)validSolutions_.size() < numSamples_ && attempts < maxAttempts) {
-        currAssignments.clear();
-        long nodesVisited = 0;
-        bool found = backtrack(0, currAssignments, nodesVisited, endTime);
-        if (timeoutOccurred_) break; // Se deu timeout, aborta o loop de amostras
-
-        if (!found) {
-            abortedAttempts_++;
-        }
-        attempts++;
-    }
+    // Agora é UMA chamada só. A função backtrack cuida de continuar coletando amostras pelos
+    // outros ramos da árvore em vez de parar no primeiro achado, e só propaga "parar" quando
+    // bate numSamples_, estoura nodeLimit_ ou dá timeout.
+    backtrack(0, currAssignments, endTime);
 
     //informações interessantes nesse escopo
     // frontier.frontierCells -> todas células escondidas da fronteira
     // validSolutions_ -> vetor de {tabela com todas celulas da fronteira mapeando pro valor atribuido}
 
-    // TODO: p/ cada célula da fronteira, ver quantas vezes ela aparece em cada validSolution como bomba e dividir pelo tanto de validSolutions
-    // isso vai me dar a probabilidade daquela célula ter uma bomba
-
-    // ADIÇÃO: se o orçamento estourou em toda tentativa e nao sobrou nenhuma solucao valida,
+    // se o orçamento estourou (ou deu timeout) e nao sobrou nenhuma solucao valida,
     // reporta como indeterminado (-1.0) em vez de dividir por zero.
     if (validSolutions_.empty()) {
         for (const std::pair<int, int>& cell : frontier.frontierCells) {
@@ -169,30 +153,37 @@ void MonteCarloSolver::sortVariables(const Frontier& frontier) {
 
 /*
 explicar isso direitinho dps
+
+essa função antes tinha um "long& nodesVisited" que era uma variável LOCAL de cada
+chamada de backtrack(0, ...) lá em estimate() (resetava a cada reinício da árvore). Agora
+nodesVisited_ é atributo da classe (nodesVisited_), porque a travessia é uma só do início ao
+fim
 */
-bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments, long& nodesVisited, std::chrono::high_resolution_clock::time_point endTime) {
+bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments, std::chrono::high_resolution_clock::time_point endTime) {
 
     // Checagem de Estouro de Tempo (Injetado)
     if (std::chrono::high_resolution_clock::now() > endTime) {
         timeoutOccurred_ = true;
-        return false;
+        return true; // propaga "para tudo" até a raiz
     }
 
-    // ADIÇÃO: orçamento de esforço por tentativa. Se estourar, desiste dessa tentativa
-    // (retorna false) em vez de continuar cavando -- é isso que impede herdar o pior
-    // caso exponencial do brute force nos casos adversariais.
-    if (++nodesVisited > nodeLimit_) {
-        return false;
+    // orçamento de esforço GLOBAL pra travessia inteira. Se estourar, desiste de
+    // continuar cavando. É isso que impede herdar o pior caso exponencial do brute force
+    // sem precisar reiniciar a árvore do zero a cada amostra.
+    if (++nodesVisited_ > nodeLimit_) {
+        return true; // propaga "para tudo" até a raiz
     }
 
     //condições de retorno no backtrack
     if (index == orderedVariables_.size()) {
         validSolutions_.push_back(currAssignments);
-        return true; // achou uma solução completa, propaga sucesso pra parar de descer
-    }
 
-    //mudei, vai tá explicado o pq dentro de estimate
-    // if (validSolutions_.size() == numSamples_) { return; }
+        // CORREÇÃO: antes era "return true" direto (achou 1 solução = para tudo).
+        // Agora só para de verdade quando já juntou numSamples_ amostras -- senão,
+        // devolve false e deixa o laço de valueOrder lá embaixo continuar tentando
+        // o outro valor da variável anterior, seguindo pelos outros ramos da árvore.
+        return (long)validSolutions_.size() >= numSamples_;
+    }
 
     //pega a primeira variavel
     std::pair<int, int> currentVar = orderedVariables_[index];
@@ -208,23 +199,18 @@ bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int
 
         if(violatesConstraints(currentVar, currAssignments)) {
             currAssignments.erase(currentVar); //desfaz
+            abortedAttempts_++; // ramo podado (beco sem saída descartado)
             continue; //testa o próximo valor
         }
 
         //continua descendo até o ponto + profundo do ramo
-        if(backtrack(index + 1, currAssignments, nodesVisited, endTime)) {
+        if(backtrack(index + 1, currAssignments, endTime)) {
             currAssignments.erase(currentVar); //permite retorno e testar o próx valor se essa era válida
-            return true; // achou solução nesse ramo, corta e sobe -- não testa o outro valor
+            return true; // meta batida (ou orçamento/timeout estourado) -- sobe sem testar o outro valor
         } 
         currAssignments.erase(currentVar);
-
-        // ADIÇÃO: se já estourou o orçamento nessa chamada (por causa da recursão que acabou
-        // de voltar), não adianta testar o outro valor -- so ia gastar mais nós à toa.
-        if (nodesVisited > nodeLimit_) {
-            return false;
-        }
     }
-    return false; //nao achou valor nesse ramo
+    return false; //esgotou os dois ramos aqui, sobe pro nível anterior tentar o outro valor dele
 }
 
 /*

@@ -8,9 +8,9 @@
 #include "BoardGenerator.h"
 #include "FrontierExtractor.h"
 #include "DeterministicSolver.h"
-#include "MonteCarloSolver.h"
 #include "BruteForceSolver.h"
 #include "AutoPlayer.h"
+#include "MonteCarloSolver.h"
 
 using namespace ms;
 using Clock = std::chrono::high_resolution_clock;
@@ -64,11 +64,11 @@ Frontier stabilizeWithDeterministicSolver(Board& board) {
 }
 
 struct ErrorStats {
-    std::vector<double> absErrors; 
-    long indeterminateCells = 0;   
+    std::vector<double> absErrors;
+    long indeterminateCells = 0;
 
     void add(double mcProb, double bfProb) {
-        if (mcProb < 0.0) { 
+        if (mcProb < 0.0) {
             indeterminateCells++;
             return;
         }
@@ -95,26 +95,27 @@ struct ErrorStats {
 };
 
 int main() {
-    std::cout << "Benchmark determinístico linear (Sem Threads) iniciando...\n";
+    std::cout << "Benchmark: MonteCarloSolver (travessia unica, corrigido) vs BruteForce...\n";
 
-    const int width = 50;
-    const int height = 50;
-    const int mineCount = 380;      
+    const int width = 80;
+    const int height = 80;
+    const int mineCount = 1280;
     const int safeX = 22;
     const int safeY = 22;
-    const int numTrials = 100;      // Configurado para 10 tabuleiros
+    const int numTrials = 100;
     const int mcSamples = 1000;
 
     int trialsUsed = 0;
     int trialsSkippedEmptyFrontier = 0;
-    int mcTimeoutCount = 0;         
-    int bfTimeoutCount = 0;         
+
+    int mcTimeoutCount = 0;
+    int bfTimeoutCount = 0;
 
     ErrorStats globalStats;
     std::vector<long long> mcTimesMs;
     std::vector<long long> bfTimesMs;
     std::vector<size_t> frontierSizesUsed;
-    std::vector<long> abortedAttemptsPerTrial; 
+    std::vector<long> abortedAttemptsPerTrial;
 
     for (int trial = 0; trial < numTrials; trial++) {
         Board board = BoardGenerator::generate(width, height, mineCount, safeX, safeY);
@@ -130,27 +131,24 @@ int main() {
         frontierSizesUsed.push_back(f.frontierCells.size());
         trialsUsed++;
 
-        // --- Execução do Monte Carlo ---
+        // --- Monte Carlo (travessia unica, sem reset) ---
         MonteCarloSolver mc;
         auto mcStart = Clock::now();
         auto probsMC = mc.estimate(board, f, mcSamples);
         auto mcEnd = Clock::now();
         long long mcMs = std::chrono::duration_cast<std::chrono::milliseconds>(mcEnd - mcStart).count();
-        
         bool mcTimedOut = mc.wasInterruptedByTimeout();
         if (mcTimedOut) mcTimeoutCount++;
 
-        // --- Execução do Brute Force ---
+        // --- Brute Force (gabarito) ---
         BruteForceSolver bf;
         auto bfStart = Clock::now();
         auto probsBF = bf.solve(board, f);
         auto bfEnd = Clock::now();
         long long bfMs = std::chrono::duration_cast<std::chrono::milliseconds>(bfEnd - bfStart).count();
-
         bool bfTimedOut = bf.wasInterruptedByTimeout();
         if (bfTimedOut) bfTimeoutCount++;
 
-        // --- Acumula estatísticas apenas se ambos completaram sem estourar o tempo ---
         if (!mcTimedOut && !bfTimedOut) {
             for (const auto& cell : f.frontierCells) {
                 double mcProb = probsMC.count(cell) ? probsMC.at(cell) : -1.0;
@@ -162,31 +160,28 @@ int main() {
             abortedAttemptsPerTrial.push_back(mc.getAbortedAttempts());
         }
 
-        // Saída em tempo real por trial
         std::cout << "  Trial " << std::setw(3) << trial << ": fronteira=" << std::setw(2) << f.frontierCells.size();
+
         if (mcTimedOut) std::cout << " | MC=TIMEOUT (>2min)";
         else std::cout << " | MC=" << mcMs << "ms";
 
         if (bfTimedOut) std::cout << " | BF=TIMEOUT (>2min)";
         else std::cout << " | BF=" << bfMs << "ms";
-        
-        std::cout << " | abortedAttempts=" << (mcTimedOut ? 0 : mc.getAbortedAttempts()) << "\n";
+
+        std::cout << " | abortedNodes=" << (mcTimedOut ? 0 : mc.getAbortedAttempts()) << "\n";
     }
 
-    // ---------------------------------------------------------------
-    // Relatório Final Consolidado
-    // ---------------------------------------------------------------
     std::cout << "\n=== Resumo do Benchmark ===\n";
     std::cout << "Trials configurados: " << numTrials << "\n";
     std::cout << "Trials processados (com fronteira ativa): " << trialsUsed << "\n";
     std::cout << "Trials pulados (resolvidos pelo deterministico): " << trialsSkippedEmptyFrontier << "\n";
 
-    std::cout << "\n--- Interrupções por Excesso de Tempo (Timeout > 2 min) ---\n";
+    std::cout << "\n--- Interrupcoes por Excesso de Tempo (Timeout > 2 min) ---\n";
     std::cout << "MonteCarlo interrompidos: " << mcTimeoutCount << "\n";
     std::cout << "BruteForce interrompidos: " << bfTimeoutCount << "\n";
 
     if (mcTimesMs.empty() || bfTimesMs.empty()) {
-        std::cout << "\nNenhum trial foi concluído com sucesso por ambos os solucionadores dentro do tempo limite.\n";
+        std::cout << "\nNenhum trial foi concluido com sucesso por ambos os solucionadores dentro do tempo limite.\n";
         return 0;
     }
 
@@ -201,9 +196,9 @@ int main() {
     std::cout << "Tempo medio MonteCarlo (concluidos): " << avgMcTime << " ms\n";
     std::cout << "Tempo medio BruteForce (concluidos): " << avgBfTime << " ms\n";
 
-    std::cout << "\n--- Tentativas abortadas pelo orcamento (nodeLimit_) do MonteCarlo ---\n";
-    std::cout << "Total de tentativas abortadas (soma de todos trials limpos): " << totalAborted << "\n";
-    std::cout << "Media de tentativas abortadas por trial: " << avgAborted << "\n";
+    std::cout << "\n--- Nos podados durante a travessia unica (MonteCarlo) ---\n";
+    std::cout << "Total (soma de todos trials limpos): " << totalAborted << "\n";
+    std::cout << "Media por trial: " << avgAborted << "\n";
 
     std::cout << "\n--- Precisao do MonteCarlo (comparado ao BruteForce como gabarito) ---\n";
     std::cout << "Celulas comparadas com sucesso: " << globalStats.absErrors.size() << "\n";
