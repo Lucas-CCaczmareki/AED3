@@ -35,6 +35,12 @@ add_executable(tests tests/main.cpp)
 target_link_libraries(tests PRIVATE core)
 
 # ---------------------------------------------------------------
+# AUTOPLAYER — executável sem GUI, roda o solver automaticamente
+# ---------------------------------------------------------------
+add_executable(autoplayer tests/main_autoplayer.cpp)
+target_link_libraries(autoplayer PRIVATE core)
+
+# ---------------------------------------------------------------
 # GUI (Qt) — só ativa se o Qt6 for encontrado no sistema.
 # Não quebra o build no VSCode se o Qt não estiver instalado ainda.
 # ---------------------------------------------------------------
