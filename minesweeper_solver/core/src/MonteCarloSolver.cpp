@@ -5,26 +5,46 @@ namespace ms {
 std::unordered_map<std::pair<int,int>, double, PairHash>
 MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int numSamples) {
     
+    // reseta o estado da instância antes de cada uso
+    constraints_.clear();
+    orderedVariables_.clear();
+    validSolutions_.clear();
+    variableConstraints_.clear();
+    rng_.seed(std::random_device{}());
+
     // Isso retorna uma porcentagem de chance de bomba pra cada variável (célula enscondida da fronteira)
     std::unordered_map<std::pair<int,int>, double, PairHash> result;
+    std::unordered_map<std::pair<int, int>, int, PairHash> currAssignments;  // vazio
+    numSamples_ = numSamples;
 
-    
     // TODO: gerar numSamples disposicoes (idealmente via backtracking com poda),
     // filtrar validas, contar frequencia de bomba por celula, dividir pelo total valido.
 
-    // descarta os valores aqui só pra conseguir compilar certinho, dps tira esses (void)
-    (void)board;
-    (void)frontier;
-    (void)numSamples;
+    buildConstraints(board, frontier);
+    sortVariables(frontier);
+    
+    backtrack(0, currAssignments);
 
+    //informações interessantes nesse escopo
+    // frontier.frontierCells -> todas células escondidas da fronteira
+    // validSolutions_ -> vetor de {tabela com todas celulas da fronteira mapeando pro valor atribuido}
 
+    // TODO: p/ cada célula da fronteira, ver quantas vezes ela aparece em cada validSolution como bomba e dividir pelo tanto de validSolutions
+    // isso vai me dar a probabilidade daquela célula ter uma bomba
 
+    for(const std::pair<int, int>& cell : frontier.frontierCells) { //p/ cada célula na fronteira
+        int appearAsBomb = 0;
+        
+        for(const auto& sample : validSolutions_) {
+            if(sample.at(cell) == 1) { //se apareceu nessa disposição como bomba
+                appearAsBomb++;
+            }
+        }
 
-
-
-
-
-
+        //usa validSolutions.size ao invés de numSamples pq numSamples é um limite, pode ser
+        // que seja impossível gerar tantas numSamples (ex: tab 4x4, n da pra gerar 1000 samples diferentes)
+        result[cell] = (double)appearAsBomb / (validSolutions_.size());
+    }
 
     return result;
 }
@@ -53,6 +73,12 @@ void MonteCarloSolver::buildConstraints(const Board& board, const Frontier& fron
                     //adiciona só as casas q tão 100% no escuro
                     if (board.at(adjX, adjY).state == CellState::Covered) {
                         constraint.variables.push_back(std::pair(adjX, adjY));
+
+                        //variableConstraints_[std::pair(adjX, adjY)]:
+                            // cria no map a entrada desse pair se já n tiver e acessa o vetor
+                        //.push_back(constraints_.size());
+                            //pega o vetor daquela posição e coloca o último índice de constraints_
+                        variableConstraints_[std::pair(adjX, adjY)].push_back(constraints_.size());
                     
                     //conta quantas casas adjacentes flagged tem
                     } else if (board.at(adjX, adjY).state == CellState::Flagged) {
@@ -106,9 +132,8 @@ void MonteCarloSolver::sortVariables(const Frontier& frontier) {
     );
 }
 
-
 /*
-
+explicar isso direitinho dps
 */
 void MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments) {
 
@@ -148,16 +173,53 @@ void MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int
     }
 }
 
+/*
+    // Tem 2 jeitos de violar a restrição já just in time
+    // 1o: A soma das variáveis nessa disposição do tabuleiro (parcial) já superou o target (numero)
+    // 2o: Todas variaveis da restrição já tem um valor atribuído e a soma não deu igual ao target
+
+    // infos disponíveis nesse escopo:
+    // lastAssigned: variavel q teve valor atribuida. ex: (0, 1)
+    // currAssigments: todos valores atribuidos pras variaveis até então nesse ramo
+    // constraints_: um vetor, com todas restrições pra cada número da fronteira
+    // variableConstraints_ : map pra (x,y) -> vetor com indices das restrições que tem aquela variavel
+*/
 bool MonteCarloSolver::violatesConstraints(const std::pair<int, int>& lastAssigned, const std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments) {
-    // for(Constraint c : constraints_) {
-    //     for(std::pair<int, int> p : c.variables) {
-    //         if(p.first == lastAssigned.first && p.second == lastAssigned.second) {
+    
+    
+    // como percorrer todas constraints e todas variaveis de cada constraint é péssimo
+    // eu optei por criar um map (x,y) -> vetor com indices das constraints onde ela aparece
+    // o overhead de operação é menor (roda menos vezes) e não ocupa tanta memória com size_t
+    
+    for(int i = 0; i < variableConstraints_[lastAssigned].size(); i++) {
 
-    //         }
-    //     }
-    // }
-    // nao consigo mais pensar, amanha eu volto a mexer nisso
+        int sum = 0;
+        bool allVarAssigned = true;
+        //vai percorrer as variaveis da constraint e ver quanto ela ta somando
+        for(const std::pair<int, int>& var : constraints_[variableConstraints_[lastAssigned][i]].variables) { //acessa a constraint q tem a ultima variavel
+            if(currAssignments.count(var) > 0) { //se a variavel já teve valor atribuido
+                sum += currAssignments.at(var);
+
+            //se n teve valor atribuido n soma. Porem seta flag como false
+            } else  {
+                allVarAssigned = false;
+            }
+        }
+
+        //1a forma de violar constraint
+        if (sum > constraints_[variableConstraints_[lastAssigned][i]].target) {
+            return true; //violou constraint
+        }
+
+        //2a forma de violar constraint
+        if(allVarAssigned) {
+            if(sum != constraints_[variableConstraints_[lastAssigned][i]].target) {
+                return true;
+            }
+        }
+    }
+    //se n teve nenhuma das 2 violações q eu previ pra todas restrições q a lastAssigned tá, retorna false
+    return false; 
 }
-
 
 } // namespace ms

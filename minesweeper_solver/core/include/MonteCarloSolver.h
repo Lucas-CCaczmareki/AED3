@@ -46,6 +46,7 @@ class MonteCarloSolver {
 public:
     // Retorna probabilidade estimada de bomba [0,1] para cada celula da fronteira
     std::unordered_map<std::pair<int,int>, double, PairHash> 
+
     estimate(const Board& board, const Frontier& frontier, int numSamples);
 
 private:
@@ -55,6 +56,9 @@ private:
 
     //vetor de "vetor" de pares que mapeiam pra [0, 1]. 
     std::vector<std::unordered_map<std::pair<int, int>, int, PairHash>> validSolutions_;
+
+    //map q guarda um vetor com todos índices das constraints de uma variável
+    std::unordered_map<std::pair<int, int>, std::vector<size_t>, PairHash> variableConstraints_;
 
     //gerador de números aleatórios. Vai garantir que a amostra fique mais aleatória e melhore os resultados
     std::mt19937 rng_; 
@@ -69,7 +73,6 @@ private:
 
     // Ordena a lista de variáveis (cobertas) na fronteira pela incidência de aparecimento delas nas restrições
     void sortVariables(const Frontier& frontier);
-
 
     // currAssignmenst aqui é o vetor com as atribuições que já foram feitas no nível atual backtrack
     // Faz o backtracking recursivo com limite pra geração de amostras
