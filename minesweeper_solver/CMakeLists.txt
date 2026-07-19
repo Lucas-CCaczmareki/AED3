@@ -18,8 +18,8 @@ add_library(core STATIC
     core/src/MonteCarloSolver.cpp
     core/src/BruteForceSolver.cpp
     core/src/AutoPlayer.cpp
-    core/src/MonteCarloPureSolver.cpp
-    core/src/MonteCarloContSolver.cpp
+    #core/src/MonteCarloPureSolver.cpp
+    #core/src/MonteCarloContSolver.cpp
     
 )
 target_include_directories(core PUBLIC core/include)
@@ -35,6 +35,12 @@ target_link_libraries(benchmark PRIVATE core)
 # ---------------------------------------------------------------
 add_executable(tests tests/main.cpp)
 target_link_libraries(tests PRIVATE core)
+
+# ---------------------------------------------------------------
+# AUTOPLAYER — executável sem GUI, roda o solver automaticamente
+# ---------------------------------------------------------------
+add_executable(autoplayer tests/main_autoplayer.cpp)
+target_link_libraries(autoplayer PRIVATE core)
 
 # ---------------------------------------------------------------
 # GUI (Qt) — só ativa se o Qt6 for encontrado no sistema.
