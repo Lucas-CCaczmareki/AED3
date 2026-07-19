@@ -11,6 +11,11 @@ bool BoardGenerator::isSafeZone(int x, int y, int clickX, int clickY) {
 }
 
 Board BoardGenerator::generate(int width, int height, int mineCount, int safeX, int safeY) {
+    std::random_device rd;
+    return generate(width, height, mineCount, safeX, safeY, rd());
+}
+
+Board BoardGenerator::generate(int width, int height, int mineCount, int safeX, int safeY, unsigned int seed) {
     if (mineCount > width * height) {
         throw std::runtime_error("Quantidade de bombas maior q tabuleiro");
     }
@@ -27,8 +32,7 @@ Board BoardGenerator::generate(int width, int height, int mineCount, int safeX, 
     }
     
     // aleatoriza a geraçao de bombas
-    std::random_device rd; // cria uma seed, da pra fixar a seed dps pro tabuleiro ser sempre o msm
-    std::mt19937 rng(rd());
+    std::mt19937 rng(seed); //usa a seed fixada ou aleatória
     std::shuffle(candidates.begin(), candidates.end(), rng); // shuffle reorganiza o vetor aleatóriamente, vou pegar a quantidade de bombas necessárias pelo começo do vetor
     for(int i = 0; i < mineCount; i++) {
         int x = candidates[i].first;

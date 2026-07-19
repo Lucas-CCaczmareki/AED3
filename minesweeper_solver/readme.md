@@ -15,9 +15,39 @@
 ## Pra rodar no VSCode
 **Pré-requisitos:** compilador C++, CMake, extensões C/C++ e CMake Tools
 
+**No Windows:** além disso, precisa ter o [Git para Windows](https://git-scm.com/download/win)
+instalado (o instalador padrão já adiciona `sh.exe` ao PATH automaticamente). O `make` no
+Windows depende desse `sh.exe` pra interpretar os comandos do Makefile — sem ele, `make build`
+falha. Não precisa necessariamente rodar o terminal Git Bash (MINGW64); qualquer terminal
+(PowerShell, cmd, VSCode integrado) funciona, desde que o Git esteja instalado e no PATH.
+
 **Depois:**
 ```bash
 make run
+```
+Isso builda o projeto inteiro e roda `benchmark` + `tests`.
+
+### Outros targets disponíveis
+
+O `Makefile` também tem targets separados pra rodar cada análise estatística individualmente
+(útil pra não esperar a bateria toda toda vez que só quer conferir um resultado específico):
+
+```bash
+make run-autoplayer      # joga N partidas completas e mede taxa de vitoria/derrota
+make run-k-convergence   # testa o MonteCarlo com k variando (10 a 5000) num board fixo
+make run-scaling         # gera varios boards e mede tempo do BruteForce por tamanho de fronteira
+make run-sensitivity     # mede taxa de vitoria variando tamanho/densidade do tabuleiro
+make run-calibration     # compara probabilidade prevista pelo MonteCarlo vs frequencia real observada
+```
+
+Se quiser rodar tudo de uma vez (demora mais, já que inclui os testes de maior volume):
+```bash
+make run-all
+```
+
+Pra limpar a pasta `build/` e forçar recompilação do zero:
+```bash
+make clean
 ```
 
 ## Pra rodar no Qt Creator

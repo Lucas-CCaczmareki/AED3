@@ -41,6 +41,24 @@ add_executable(autoplayer tests/main_autoplayer.cpp)
 target_link_libraries(autoplayer PRIVATE core)
 
 # ---------------------------------------------------------------
+# ANALISES ESTATISTICAS EXTRA — convergencia, escala, sensibilidade, calibracao
+# ---------------------------------------------------------------
+add_executable(k_convergence tests/main_k_convergence.cpp)
+target_link_libraries(k_convergence PRIVATE core)
+
+add_executable(scaling_curve tests/main_scaling_curve.cpp)
+target_link_libraries(scaling_curve PRIVATE core)
+
+add_executable(sensitivity tests/main_sensitivity.cpp)
+target_link_libraries(sensitivity PRIVATE core)
+
+add_executable(calibration tests/main_calibration.cpp)
+target_link_libraries(calibration PRIVATE core)
+
+add_executable(benchmark_mc_vs_bf tests/main_benchmark_mc_vs_bf.cpp)
+target_link_libraries(benchmark_mc_vs_bf PRIVATE core)
+
+# ---------------------------------------------------------------
 # GUI (Qt) — só ativa se o Qt6 for encontrado no sistema.
 # Não quebra o build no VSCode se o Qt não estiver instalado ainda.
 # ---------------------------------------------------------------

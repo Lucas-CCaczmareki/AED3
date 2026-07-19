@@ -13,6 +13,10 @@ public:
     // que (safeX, safeY) e vizinhas fiquem livres (regra do 1o clique seguro).
     static Board generate(int width, int height, int mineCount, int safeX, int safeY);
 
+    //overload com seed opcional
+    static Board generate(int width, int height, int mineCount, int safeX, int safeY, unsigned int seed);
+
+
 private:
     static bool isSafeZone(int x, int y, int clickX, int clickY);
 };
