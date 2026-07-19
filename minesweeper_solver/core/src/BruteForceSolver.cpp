@@ -8,6 +8,9 @@ namespace ms {
 std::unordered_map<std::pair<int,int>, double, PairHash>
 BruteForceSolver::solve(const Board& board, const Frontier& frontier) {
     
+    timeoutOccurred_ = false;
+    auto endTime = std::chrono::high_resolution_clock::now() + std::chrono::minutes(1);
+
     // reseta o estado da instância antes de cada uso
     constraints_.clear();
     orderedVariables_.clear();
@@ -24,7 +27,7 @@ BruteForceSolver::solve(const Board& board, const Frontier& frontier) {
     buildConstraints(board, frontier);
     sortVariables(frontier);
     
-    backtrack(0, currAssignments);
+    backtrack(0, currAssignments, endTime);
 
     for(const std::pair<int, int>& cell : frontier.frontierCells) { //p/ cada célula na fronteira
         int appearAsBomb = 0;
@@ -125,8 +128,13 @@ void BruteForceSolver::sortVariables(const Frontier& frontier) {
 /*
 explicar isso direitinho dps
 */
-void BruteForceSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments) {
+void BruteForceSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments, std::chrono::high_resolution_clock::time_point endTime) {
     
+    if (std::chrono::high_resolution_clock::now() > endTime) {
+        timeoutOccurred_ = true;
+        return;
+    }
+
     if (index == orderedVariables_.size()) { 
         validSolutions_.push_back(currAssignments);
         return; 
@@ -146,7 +154,7 @@ void BruteForceSolver::backtrack (size_t index, std::unordered_map<std::pair<int
             continue; //testa o próximo valor
         }
 
-        backtrack(index + 1, currAssignments); //continua descendo até o ponto + profundo do ramo
+        backtrack(index + 1, currAssignments, endTime); //continua descendo até o ponto + profundo do ramo
         currAssignments.erase(currentVar); //permite retorno e testar o próx valor se essa era válida
     }
 }

@@ -57,94 +57,94 @@ void printBoard(const Board& board) {
 }
  
 int main() {
-    int width = 64;
-    int height = 64;
-    int mineCount = 1024;
-    int safeX = 6;
-    int safeY = 6;
+    // int width = 50;
+    // int height = 50;
+    // int mineCount = 500; // ~20%
+    // int safeX = 25;
+    // int safeY = 25;
  
-    Board board = BoardGenerator::generate(width, height, mineCount, safeX, safeY);
+    // Board board = BoardGenerator::generate(width, height, mineCount, safeX, safeY);
  
-    std::cout << "--- Tabuleiro" << width << "x" << height << "recem-gerado (antes do 1o clique) ---\n";
-    printBoard(board);
+    // std::cout << "--- Tabuleiro" << width << "x" << height << "recem-gerado (antes do 1o clique) ---\n";
+    // // printBoard(board);
  
-    std::cout << "\n--- Simulando o 1o clique em (" << safeX << "," << safeY << ") ---\n";
-    revealCascade(board, safeX, safeY);
-    printBoard(board);
+    // std::cout << "\n--- Simulando o 1o clique em (" << safeX << "," << safeY << ") ---\n";
+    // revealCascade(board, safeX, safeY);
+    // // printBoard(board);
  
-    Frontier f = FrontierExtractor::extract(board);
-    std::cout << "\nfrontierNumbers: " << f.frontierNumbers.size()
-              << " | frontierCells: " << f.frontierCells.size() << "\n";
+    // Frontier f = FrontierExtractor::extract(board);
+    // std::cout << "\nfrontierNumbers: " << f.frontierNumbers.size()
+    //           << " | frontierCells: " << f.frontierCells.size() << "\n";
  
-    if (f.frontierCells.empty()) {
-        std::cout << "Fronteira vazia (cascata cobriu o tabuleiro todo ou nao sobrou nada"
-                     " incerto) -- tenta rodar de novo, o resultado do gerador e aleatorio.\n";
-        return 0;
-    }
+    // if (f.frontierCells.empty()) {
+    //     std::cout << "Fronteira vazia (cascata cobriu o tabuleiro todo ou nao sobrou nada"
+    //                  " incerto) -- tenta rodar de novo, o resultado do gerador e aleatorio.\n";
+    //     return 0;
+    // }
 
-    // --- Loop externo: roda o DeterministicSolver quantas vezes forem necessarias,
-    // revelando/marcando e recalculando a fronteira, ate parar de conseguir deduzir algo novo ---
-    DeterministicSolver detSolver;
-    bool changed = true;
-    int rodada = 1;
+    // // --- Loop externo: roda o DeterministicSolver quantas vezes forem necessarias,
+    // // revelando/marcando e recalculando a fronteira, ate parar de conseguir deduzir algo novo ---
+    // DeterministicSolver detSolver;
+    // bool changed = true;
+    // int rodada = 1;
 
-    while (changed) {
-        changed = false;
+    // while (changed) {
+    //     changed = false;
 
-        DeductionResult result = detSolver.solve(board, f.frontierNumbers);
+    //     DeductionResult result = detSolver.solve(board, f.frontierNumbers);
 
-        std::cout << "\n--- Rodada " << rodada << " do DeterministicSolver ---\n";
-        std::cout << "Minas encontradas: " << result.mineCells.size()
-                  << " | Seguras encontradas: " << result.safeCells.size() << "\n";
-        rodada++;
+    //     std::cout << "\n--- Rodada " << rodada << " do DeterministicSolver ---\n";
+    //     std::cout << "Minas encontradas: " << result.mineCells.size()
+    //               << " | Seguras encontradas: " << result.safeCells.size() << "\n";
+    //     rodada++;
 
-        // Revela as celulas que o solver garantiu que sao seguras
-        for (auto [sx, sy] : result.safeCells) {
-            if (board.at(sx, sy).state == CellState::Covered) {
-                revealCascade(board, sx, sy);
-                changed = true;
-            }
-        }
+    //     // Revela as celulas que o solver garantiu que sao seguras
+    //     for (auto [sx, sy] : result.safeCells) {
+    //         if (board.at(sx, sy).state == CellState::Covered) {
+    //             revealCascade(board, sx, sy);
+    //             changed = true;
+    //         }
+    //     }
 
-        // Minas encontradas tambem contam como "mudanca", mesmo sem revelar nada,
-        // porque isso pode alterar contas de countMines nas proximas rodadas
-        if (!result.mineCells.empty()) {
-            changed = true;
-        }
+    //     // Minas encontradas tambem contam como "mudanca", mesmo sem revelar nada,
+    //     // porque isso pode alterar contas de countMines nas proximas rodadas
+    //     if (!result.mineCells.empty()) {
+    //         changed = true;
+    //     }
 
-        // Recalcula a fronteira porque o board mudou
-        f = FrontierExtractor::extract(board);
+    //     // Recalcula a fronteira porque o board mudou
+    //     f = FrontierExtractor::extract(board);
 
-        std::cout << "Fronteira apos rodada -> Numeros: " << f.frontierNumbers.size()
-                  << " | Celulas: " << f.frontierCells.size() << "\n";
+    //     std::cout << "Fronteira apos rodada -> Numeros: " << f.frontierNumbers.size()
+    //               << " | Celulas: " << f.frontierCells.size() << "\n";
 
-        if (f.frontierCells.empty()) {
-            std::cout << "Tabuleiro completamente resolvido ou sem fronteiras pendentes!\n";
-            printBoard(board);
-            return 0;
-        }
-    }
+    //     if (f.frontierCells.empty()) {
+    //         std::cout << "Tabuleiro completamente resolvido ou sem fronteiras pendentes!\n";
+    //         // printBoard(board);
+    //         return 0;
+    //     }
+    // }
 
-    std::cout << "\n--- MonteCarloSolver (k=1000) no tabuleiro ---\n";
-    MonteCarloSolver mc;
-    auto probsMC = mc.estimate(board, f, 1000);
-    std::cout << std::fixed << std::setprecision(4);
-    for (auto& [cell, prob] : probsMC) {
-        std::cout << "  (" << cell.first << "," << cell.second << ") = " << (prob * 100.0) << "%\n";
-    }
+    // std::cout << "\n--- MonteCarloSolver (k=1000) no tabuleiro ---\n";
+    // MonteCarloSolver mc;
+    // auto probsMC = mc.estimate(board, f, 1000);
+    // std::cout << std::fixed << std::setprecision(4);
+    // for (auto& [cell, prob] : probsMC) {
+    //     std::cout << "  (" << cell.first << "," << cell.second << ") = " << (prob * 100.0) << "%\n";
+    // }
     
-    //descomentar limite de seguranca se achar necessario
+    // //descomentar limite de seguranca se achar necessario
     // if (f.frontierCells.size() <= 20) {
-        std::cout << "\n--- BruteForceSolver (fronteira " << f.frontierCells.size() << " celulas) ---\n";
-        BruteForceSolver bf;
-        auto probsBF = bf.solve(board, f);
-        for (auto& [cell, prob] : probsBF) {
-            std::cout << "  (" << cell.first << "," << cell.second << ") = " << (prob * 100.0) << "%\n";
-        }
+    //     std::cout << "\n--- BruteForceSolver (fronteira " << f.frontierCells.size() << " celulas) ---\n";
+    //     BruteForceSolver bf;
+    //     auto probsBF = bf.solve(board, f);
+    //     for (auto& [cell, prob] : probsBF) {
+    //         std::cout << "  (" << cell.first << "," << cell.second << ") = " << (prob * 100.0) << "%\n";
+    //     }
     // } else {
     //     std::cout << "\n--- BruteForceSolver pulado: fronteira tem " << f.frontierCells.size()
     //               << " celulas, grande demais pra 2^n exaustivo ---\n";
     // }
  
-    return 0;
+    // return 0;
 }

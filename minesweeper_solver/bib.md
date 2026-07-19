@@ -22,6 +22,18 @@ Upper Confidence Tree-Based Consistent Reactive Planning: Application to MineSwe
 
 Neural Network Learner for Minesweeper, problema de inferência (2022) : https://arxiv.org/pdf/2212.10446
 
+## Amostragem em CSP/SAT e viés de backtracking (contagem/amostragem aproximada)
+
+Approximate Counting by Sampling the Backtrack-free Search Space (Gogate & Dechter, AAAI 2007) : http://sami.ics.uci.edu/papers/gogate_2.pdf
+
+Uniform Solution Sampling Using a Constraint Solver As an Oracle (Ermon, Gomes & Selman, UAI 2012) : https://arxiv.org/pdf/1210.4861
+
+From Sampling to Model Counting (Gomes, Hoffmann, Sabharwal & Selman, IJCAI 2007) : conferir referência via Gomes et al. (citado em Gogate & Dechter, acima)
+
+Model Counting (capítulo de handbook, Sang, Beame & Kautz / Gomes, Sabharwal & Selman) : https://www.cs.cornell.edu/~sabhar/chapters/ModelCounting-SAT-Handbook-prelim.pdf
+
+Leveraging Belief Propagation, Backtrack Search, and Statistics for Model Counting (Gomes, Hoffmann, Sabharwal & Selman, Annals of Operations Research, 2009) : https://link.springer.com/article/10.1007/s10479-009-0680-7
+
 ## Material didático / slides
 
 Minesweeper is NP-Complete, slides didáticos baseados em Kaye (Melissa Gymrek, MIT OCW, 2010) : https://ocw.mit.edu/courses/es-268-the-mathematics-in-toys-and-games-spring-2010/50a061a2f76a503d8473a072965bc8ff_MITES_268S10_ses11_slides.pdf

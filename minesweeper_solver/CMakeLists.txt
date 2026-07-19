@@ -24,7 +24,7 @@ target_include_directories(core PUBLIC core/include)
 # ---------------------------------------------------------------
 # BENCHMARK — executável sem GUI, roda experimentos/métricas
 # ---------------------------------------------------------------
-add_executable(benchmark benchmark/main.cpp)
+add_executable(benchmark benchmark/main2.cpp)
 target_link_libraries(benchmark PRIVATE core)
 
 # ---------------------------------------------------------------

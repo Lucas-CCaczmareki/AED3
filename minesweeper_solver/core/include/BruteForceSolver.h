@@ -25,8 +25,10 @@ public:
     */
     // Testa TODAS as 2^n disposicoes possiveis da fronteira.
     std::unordered_map<std::pair<int,int>, double, PairHash> solve(const Board& board, const Frontier& frontier);
+    bool wasInterruptedByTimeout() const { return timeoutOccurred_; }
 
 private:
+    bool timeoutOccurred_ = false;
     std::vector<std::pair<int, int>> orderedVariables_; //variáveis ordenadas pra dar de entrada no backtracking. Estarem ordenadas já melhora a chance de podar ramos ruins no começo
     std::vector<Constraint> constraints_;               //vetor com as restrições dos números revelados (FrontierNumbers)
 
@@ -48,7 +50,7 @@ private:
 
     // currAssignmenst aqui é o vetor com as atribuições que já foram feitas no nível atual backtrack
     // Faz o backtracking recursivo com limite pra geração de amostras
-    void backtrack(size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);
+    void backtrack(size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments, std::chrono::high_resolution_clock::time_point endTime);
 
     // Confere se a atribuição atual quebrou alguma restrição
     bool violatesConstraints(const std::pair<int, int>& lastAssigned, const std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);

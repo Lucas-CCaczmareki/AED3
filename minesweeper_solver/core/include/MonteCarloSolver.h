@@ -7,6 +7,7 @@
 #include <vector>
 #include <random>
 #include <algorithm> //pra trazer o sort 
+#include <chrono>
 
 /* Glossário (dps ajeita pra deixar legível)
 Variável: cada célula coberta da fronteira é tratada como uma "caixinha" que só pode guardar dois valores possíveis: 0 (sem bomba) ou 1 (com bomba). Ainda não sabemos qual valor é o certo — é isso que estamos tentando descobrir.
@@ -49,8 +50,15 @@ public:
 
     estimate(const Board& board, const Frontier& frontier, int numSamples);
 
+    long getAbortedAttempts() const { return abortedAttempts_; }
+    bool wasInterruptedByTimeout() const { return timeoutOccurred_; }
+
+
 private:
     int numSamples_;
+    long abortedAttempts_ = 0;
+    bool timeoutOccurred_ = false;
+
     std::vector<std::pair<int, int>> orderedVariables_; //variáveis ordenadas pra dar de entrada no backtracking. Estarem ordenadas já melhora a chance de podar ramos ruins no começo
     std::vector<Constraint> constraints_;               //vetor com as restrições dos números revelados (FrontierNumbers)
 
@@ -62,6 +70,15 @@ private:
 
     //gerador de números aleatórios. Vai garantir que a amostra fique mais aleatória e melhore os resultados
     std::mt19937 rng_; 
+
+    // ADIÇÃO: orçamento máximo de nós visitados por tentativa de amostra. Se uma tentativa
+    // estourar isso, é abortada (não conta como sample válida) em vez de continuar cavando --
+    // é isso que evita herdar o pior caso exponencial do brute force em fronteiras adversariais.
+    long nodeLimit_ = 50000;
+
+    // ADIÇÃO: rede de segurança pro loop de tentativas em estimate(). maxAttempts = numSamples_ * isso.
+    // Evita loop indefinido em boards tao dificeis que quase nenhuma tentativa fecha dentro do orçamento.
+    int maxAttemptsMultiplier_ = 5;
 
     // ---------------------------
     //     Funções auxiliares
@@ -76,7 +93,8 @@ private:
 
     // currAssignmenst aqui é o vetor com as atribuições que já foram feitas no nível atual backtrack
     // Faz o backtracking recursivo com limite pra geração de amostras
-    bool backtrack(size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);
+    // ADIÇÃO: nodesVisited conta quantos nós essa tentativa já visitou, pra cortar se estourar nodeLimit_
+    bool backtrack(size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments, long& nodesVisited, std::chrono::high_resolution_clock::time_point endTime);
 
     // Confere se a atribuição atual quebrou alguma restrição
     bool violatesConstraints(const std::pair<int, int>& lastAssigned, const std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);

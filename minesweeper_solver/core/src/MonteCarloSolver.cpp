@@ -5,6 +5,9 @@ namespace ms {
 std::unordered_map<std::pair<int,int>, double, PairHash>
 MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int numSamples) {
     
+    timeoutOccurred_ = false;
+    auto endTime = std::chrono::high_resolution_clock::now() + std::chrono::minutes(1);
+
     // reseta o estado da instância antes de cada uso
     constraints_.clear();
     orderedVariables_.clear();
@@ -26,9 +29,26 @@ MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int num
     // roda desde o início sempre que achar uma sample válida para
     // e inicia do começo de novo. Isso garante mais aleatoriedade
     // (antes ele rodava como um DFS, então ficava preso num lado da árvore só)
-    for(int i = 0; i < numSamples_; i++) {
+    //
+    // ADIÇÃO: cada tentativa agora tem um orçamento de nós (nodeLimit_). Se estourar,
+    // a busca aborta aquela tentativa (não conta como sample) e tenta de novo do zero
+    // com um caminho novo (shuffle diferente). Isso evita herdar o pior caso exponencial
+    // do CSP subjacente, em vez de travar, ele degrada (menos amostras) mas sempre retorna.
+    // maxAttempts_ é uma rede de segurança pra não ficar em loop indefinido em boards
+    // patológicos onde quase nenhuma tentativa fecha dentro do orçamento.
+    int attempts = 0;
+    int maxAttempts = numSamples_ * maxAttemptsMultiplier_;
+    
+    while ((int)validSolutions_.size() < numSamples_ && attempts < maxAttempts) {
         currAssignments.clear();
-        backtrack(0, currAssignments);
+        long nodesVisited = 0;
+        bool found = backtrack(0, currAssignments, nodesVisited, endTime);
+        if (timeoutOccurred_) break; // Se deu timeout, aborta o loop de amostras
+
+        if (!found) {
+            abortedAttempts_++;
+        }
+        attempts++;
     }
 
     //informações interessantes nesse escopo
@@ -37,6 +57,15 @@ MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int num
 
     // TODO: p/ cada célula da fronteira, ver quantas vezes ela aparece em cada validSolution como bomba e dividir pelo tanto de validSolutions
     // isso vai me dar a probabilidade daquela célula ter uma bomba
+
+    // ADIÇÃO: se o orçamento estourou em toda tentativa e nao sobrou nenhuma solucao valida,
+    // reporta como indeterminado (-1.0) em vez de dividir por zero.
+    if (validSolutions_.empty()) {
+        for (const std::pair<int, int>& cell : frontier.frontierCells) {
+            result[cell] = -1.0;
+        }
+        return result;
+    }
 
     for(const std::pair<int, int>& cell : frontier.frontierCells) { //p/ cada célula na fronteira
         int appearAsBomb = 0;
@@ -141,7 +170,20 @@ void MonteCarloSolver::sortVariables(const Frontier& frontier) {
 /*
 explicar isso direitinho dps
 */
-bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments) {
+bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments, long& nodesVisited, std::chrono::high_resolution_clock::time_point endTime) {
+
+    // Checagem de Estouro de Tempo (Injetado)
+    if (std::chrono::high_resolution_clock::now() > endTime) {
+        timeoutOccurred_ = true;
+        return false;
+    }
+
+    // ADIÇÃO: orçamento de esforço por tentativa. Se estourar, desiste dessa tentativa
+    // (retorna false) em vez de continuar cavando -- é isso que impede herdar o pior
+    // caso exponencial do brute force nos casos adversariais.
+    if (++nodesVisited > nodeLimit_) {
+        return false;
+    }
 
     //condições de retorno no backtrack
     if (index == orderedVariables_.size()) {
@@ -170,11 +212,17 @@ bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int
         }
 
         //continua descendo até o ponto + profundo do ramo
-        if(backtrack(index + 1, currAssignments)) {
+        if(backtrack(index + 1, currAssignments, nodesVisited, endTime)) {
             currAssignments.erase(currentVar); //permite retorno e testar o próx valor se essa era válida
             return true; // achou solução nesse ramo, corta e sobe -- não testa o outro valor
         } 
         currAssignments.erase(currentVar);
+
+        // ADIÇÃO: se já estourou o orçamento nessa chamada (por causa da recursão que acabou
+        // de voltar), não adianta testar o outro valor -- so ia gastar mais nós à toa.
+        if (nodesVisited > nodeLimit_) {
+            return false;
+        }
     }
     return false; //nao achou valor nesse ramo
 }
