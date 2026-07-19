@@ -29,7 +29,7 @@ Frontier FrontierExtractor::extract(const Board& board) {
 
             //esse if tem 9 iterações no máximo
             if (c.state == CellState::Revealed) { //apenas uma célula coberta é fronteira
-                //analisa as 8 adjacentes, como eu pego as adjacentes?
+                //analisa as 8 adjacentes
                 
                 //bound é x - 1 até x + 1
                 // e y - 1 até y + 1. Pras 8 células adjacentes
@@ -40,9 +40,7 @@ Frontier FrontierExtractor::extract(const Board& board) {
 
                         // se ta dentro do tabuleiro, avalia
                         if(board.inBounds(adjX, adjY)) {
-                            if (board.at(adjX, adjY).state == CellState::Covered
-                                // && nao pode ta no frontierCells
-                            ) {
+                            if (board.at(adjX, adjY).state == CellState::Covered) {
                                 //manda a célula atual pro vetor de células fronteiras
                                 frontierCellsSet.insert(std::pair(adjX, adjY)); 
                             }
