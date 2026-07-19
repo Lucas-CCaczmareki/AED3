@@ -18,18 +18,6 @@ run: build
 run-autoplayer: build
 	cd build && ./autoplayer$(EXT)
 
-run-k-convergence: build
-	cd build && ./k_convergence$(EXT)
-
-run-scaling: build
-	cd build && ./scaling_curve$(EXT)
-
-run-sensitivity: build
-	cd build && ./sensitivity$(EXT)
-
-run-calibration: build
-	cd build && ./calibration$(EXT)
-
 run-benchmark-mc-vs-bf: build
 	cd build && ./benchmark_mc_vs_bf$(EXT)
 

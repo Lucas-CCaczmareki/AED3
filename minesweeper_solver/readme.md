@@ -34,10 +34,7 @@ O `Makefile` também tem targets separados pra rodar cada análise estatística 
 
 ```bash
 make run-autoplayer      # joga N partidas completas e mede taxa de vitoria/derrota
-make run-k-convergence   # testa o MonteCarlo com k variando (10 a 5000) num board fixo
-make run-scaling         # gera varios boards e mede tempo do BruteForce por tamanho de fronteira
-make run-sensitivity     # mede taxa de vitoria variando tamanho/densidade do tabuleiro
-make run-calibration     # compara probabilidade prevista pelo MonteCarlo vs frequencia real observada
+make run-benchmark-mc-vs-bf # gera vários tabuleiros e compara desempenho do MC contra o BF
 ```
 
 Se quiser rodar tudo de uma vez (demora mais, já que inclui os testes de maior volume):

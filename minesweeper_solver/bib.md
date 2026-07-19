@@ -1,3 +1,4 @@
+links interessantes para leitura (nem todos foram lidos)
 # Referências - Campo Minado, NP-completude, CSP e Monte Carlo
 
 ## Artigo original - prova de NP-completude
