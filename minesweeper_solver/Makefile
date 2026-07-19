@@ -23,5 +23,3 @@ run: build
 
 clean:
 	$(RMDIR)
-
- 
