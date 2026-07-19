@@ -23,7 +23,13 @@ MonteCarloSolver::estimate(const Board& board, const Frontier& frontier, int num
     buildConstraints(board, frontier);
     sortVariables(frontier);
     
-    backtrack(0, currAssignments);
+    // roda desde o início sempre que achar uma sample válida para
+    // e inicia do começo de novo. Isso garante mais aleatoriedade
+    // (antes ele rodava como um DFS, então ficava preso num lado da árvore só)
+    for(int i = 0; i < numSamples_; i++) {
+        currAssignments.clear();
+        backtrack(0, currAssignments);
+    }
 
     //informações interessantes nesse escopo
     // frontier.frontierCells -> todas células escondidas da fronteira
@@ -135,15 +141,16 @@ void MonteCarloSolver::sortVariables(const Frontier& frontier) {
 /*
 explicar isso direitinho dps
 */
-void MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments) {
+bool MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments) {
 
     //condições de retorno no backtrack
-    if (validSolutions_.size() == numSamples_) { return; }
-    
-    if (index == orderedVariables_.size()) { 
+    if (index == orderedVariables_.size()) {
         validSolutions_.push_back(currAssignments);
-        return; 
-    }    
+        return true; // achou uma solução completa, propaga sucesso pra parar de descer
+    }
+
+    //mudei, vai tá explicado o pq dentro de estimate
+    // if (validSolutions_.size() == numSamples_) { return; }
 
     //pega a primeira variavel
     std::pair<int, int> currentVar = orderedVariables_[index];
@@ -162,15 +169,14 @@ void MonteCarloSolver::backtrack (size_t index, std::unordered_map<std::pair<int
             continue; //testa o próximo valor
         }
 
-        backtrack(index + 1, currAssignments); //continua descendo até o ponto + profundo do ramo
-        currAssignments.erase(currentVar); //permite retorno e testar o próx valor se essa era válida
-
-        // para de descer na árvore antes de testar todos valores pra essa variável  
-        if (validSolutions_.size() >= (size_t)numSamples_) {
-            return;
-        }
-
+        //continua descendo até o ponto + profundo do ramo
+        if(backtrack(index + 1, currAssignments)) {
+            currAssignments.erase(currentVar); //permite retorno e testar o próx valor se essa era válida
+            return true; // achou solução nesse ramo, corta e sobe -- não testa o outro valor
+        } 
+        currAssignments.erase(currentVar);
     }
+    return false; //nao achou valor nesse ramo
 }
 
 /*

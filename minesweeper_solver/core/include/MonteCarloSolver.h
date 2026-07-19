@@ -76,7 +76,7 @@ private:
 
     // currAssignmenst aqui é o vetor com as atribuições que já foram feitas no nível atual backtrack
     // Faz o backtracking recursivo com limite pra geração de amostras
-    void backtrack(size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);
+    bool backtrack(size_t index, std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);
 
     // Confere se a atribuição atual quebrou alguma restrição
     bool violatesConstraints(const std::pair<int, int>& lastAssigned, const std::unordered_map<std::pair<int, int>, int, PairHash>& currAssignments);

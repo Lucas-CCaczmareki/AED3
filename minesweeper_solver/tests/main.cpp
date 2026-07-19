@@ -6,6 +6,7 @@
 #include "MonteCarloSolver.h"
 #include "BruteForceSolver.h"
 #include "BoardGenerator.h"
+#include "DeterministicSolver.h"
  
 using namespace ms;
  
@@ -56,15 +57,15 @@ void printBoard(const Board& board) {
 }
  
 int main() {
-    int width = 16;
-    int height = 16;
-    int mineCount = 40;
-    int safeX = 16;
-    int safeY = 16;
+    int width = 64;
+    int height = 64;
+    int mineCount = 1024;
+    int safeX = 6;
+    int safeY = 6;
  
     Board board = BoardGenerator::generate(width, height, mineCount, safeX, safeY);
  
-    std::cout << "--- Tabuleiro 16x16 recem-gerado (antes do 1o clique) ---\n";
+    std::cout << "--- Tabuleiro" << width << "x" << height << "recem-gerado (antes do 1o clique) ---\n";
     printBoard(board);
  
     std::cout << "\n--- Simulando o 1o clique em (" << safeX << "," << safeY << ") ---\n";
@@ -80,18 +81,59 @@ int main() {
                      " incerto) -- tenta rodar de novo, o resultado do gerador e aleatorio.\n";
         return 0;
     }
- 
-    std::cout << "\n--- MonteCarloSolver (k=1000) no tabuleiro 32x32 ---\n";
+
+    // --- Loop externo: roda o DeterministicSolver quantas vezes forem necessarias,
+    // revelando/marcando e recalculando a fronteira, ate parar de conseguir deduzir algo novo ---
+    DeterministicSolver detSolver;
+    bool changed = true;
+    int rodada = 1;
+
+    while (changed) {
+        changed = false;
+
+        DeductionResult result = detSolver.solve(board, f.frontierNumbers);
+
+        std::cout << "\n--- Rodada " << rodada << " do DeterministicSolver ---\n";
+        std::cout << "Minas encontradas: " << result.mineCells.size()
+                  << " | Seguras encontradas: " << result.safeCells.size() << "\n";
+        rodada++;
+
+        // Revela as celulas que o solver garantiu que sao seguras
+        for (auto [sx, sy] : result.safeCells) {
+            if (board.at(sx, sy).state == CellState::Covered) {
+                revealCascade(board, sx, sy);
+                changed = true;
+            }
+        }
+
+        // Minas encontradas tambem contam como "mudanca", mesmo sem revelar nada,
+        // porque isso pode alterar contas de countMines nas proximas rodadas
+        if (!result.mineCells.empty()) {
+            changed = true;
+        }
+
+        // Recalcula a fronteira porque o board mudou
+        f = FrontierExtractor::extract(board);
+
+        std::cout << "Fronteira apos rodada -> Numeros: " << f.frontierNumbers.size()
+                  << " | Celulas: " << f.frontierCells.size() << "\n";
+
+        if (f.frontierCells.empty()) {
+            std::cout << "Tabuleiro completamente resolvido ou sem fronteiras pendentes!\n";
+            printBoard(board);
+            return 0;
+        }
+    }
+
+    std::cout << "\n--- MonteCarloSolver (k=1000) no tabuleiro ---\n";
     MonteCarloSolver mc;
     auto probsMC = mc.estimate(board, f, 1000);
     std::cout << std::fixed << std::setprecision(4);
     for (auto& [cell, prob] : probsMC) {
         std::cout << "  (" << cell.first << "," << cell.second << ") = " << (prob * 100.0) << "%\n";
     }
- 
-    // BruteForce so e viavel se a fronteira for pequena o suficiente (poucas
-    // dezenas de celulas) -- em 32x32 pode ser grande demais e travar, entao
-    // colocamos um limite de seguranca antes de tentar.
+    
+    //descomentar limite de seguranca se achar necessario
     // if (f.frontierCells.size() <= 20) {
         std::cout << "\n--- BruteForceSolver (fronteira " << f.frontierCells.size() << " celulas) ---\n";
         BruteForceSolver bf;

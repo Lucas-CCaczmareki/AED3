@@ -17,7 +17,7 @@ struct DeductionResult {
 
 class DeterministicSolver {
 public:
-    // Aplica regras deterministicas ate estabilizar. Retorna o que foi deduzido.
+    // Aplica regras deterministicas ATE estabilizar. Retorna o que foi deduzido. 
     static DeductionResult solve(Board& board, const std::vector<std::pair<int,int>>& frontierNumbers);
 
 private:
